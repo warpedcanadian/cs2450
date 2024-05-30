@@ -1,0 +1,47 @@
+# Group Project Milestone 1
+
+## Meeting Reports
+
+### Week 1: May 15, 2024
+
+**Who Attended:**
+- Cooper Fullmer
+- Spencer Nelson
+- Hyomin Cha
+- Carson Strachan
+
+**Agenda Items Discussed:**
+- Introductions
+- Carson has a GitHub and will add all members to the repository.
+
+**Action Items To Complete Before Next Meeting:**
+- Everyone: review Milestone 1 and Milestone 2
+- Spencer: create a survey to find best meeting time for everyone
+- Everyone: set weekly meeting schedule after survey results are shared
+
+### Week 2: May 22, 2024
+
+**Who Attended:**
+- Carson Strachan
+- Spencer Nelson
+- Hyomin Cha
+- Cooper Fullmer
+
+**Agenda Items Discussed:**
+- Created Scrum Master schedule
+- Discuss project management tools needed
+- Milestone 1 submission responsibilities
+
+**Action Items To Complete Before Next Meeting:**
+- Spencer: taking over as Scrum Master
+- Everyone: create one user story and 3-4 use cases for Design Document
+- Everyone: gather ideas on how to create working prototype
+- Carson: prepare Project Launch Details document and submit Meeting Reports
+
+**Other Notes:**
+- To be discussed next meeting: unit tests for Milestone 2
+- To be discussed next meeting: other documents for Milestone 2
+
+**Definitions:**
+- **User Story:** A short, informal description of what a customer will do with the software, and the value they will receive from doing so.
+- **Use Case:** A methodology and document that describes how users interact with a system or product to achieve a goal.

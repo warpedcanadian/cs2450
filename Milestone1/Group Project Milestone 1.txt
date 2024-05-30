@@ -1,0 +1,29 @@
+# Group Project Milestone 1
+
+## Project Launch Details
+
+### Team Members:
+- Carson Strachan
+- Cooper Fullmer
+- Hyomin Cha
+- Spencer Nelson
+
+### Proposed Meeting Schedule:
+- Wednesday's at 8PM MDT
+
+### Schedule of Scrum Masters:
+- **Milestone 1**: Carson Strachan
+- **Milestone 2**: Spencer Nelson
+- **Milestone 3**: Cooper Fullmer
+- **Milestone 4**: Hyomin Cha
+- **Milestone 5**: Carson Strachan
+- **Milestone 6**: Spencer Nelson
+
+### Programming Language:
+- Python
+
+### Source Control:
+- Github: [https://github.com/warpedcanadian/cs2450](https://github.com/warpedcanadian/cs2450)
+
+### Project Management:
+- Team feels we do not need one at this time. May decide to instate one in the future depending on project needs.
