@@ -1,0 +1,31 @@
+# Group Project Milestone 2
+
+## Meeting Reports
+
+### May 29, 2024
+
+**Who Attended:**
+- Carson Strachan
+- Spencer Nelson (Scrum Master)
+- Hyomin Cha
+- Cooper Fullmer
+
+**Agenda Items Discussed:**
+- Discussed CS 2810 and the LC3 simulator and how its similar to UVSim.
+- Discussed formatting and basic structure of UVSim.
+- Reviewed GitHub. How to make branches, commits, pull requests.
+
+**Action Items To Complete Before Next Meeting:**
+- Carson: Base structure of UVSim and I/O operations.
+- Cooper: Load/store operations.
+- Hyomin: Arithmetic operations.
+- Spencer: Control operations.
+
+**Other Notes:**
+- https://wchargin.com/lc3web/
+- https://www.youtube.com/watch?v=yZChqRqPluI
+- https://www.youtube.com/watch?v=iv8rSLsi1xo
+- https://github.com/warpedcanadian/cs2450
+
+
+
