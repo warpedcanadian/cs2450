@@ -19,7 +19,13 @@ class UVSim:
         operand = instruction % 100
 
         if opcode == 10:  # READ
-            self.memory[operand] = int(input("Enter a number: "))
+            while True:
+                user_input = input("Enter a four-digit number (ex. +1234, -5678): ")
+                if self.is_valid_instruction(user_input):
+                    self.memory[operand] = int(user_input)
+                    break
+                else:
+                    print("Invalid input. Please enter a valid four-digit number with an optional sign.")
         elif opcode == 11:  # WRITE
             print(self.memory[operand])
 
@@ -37,18 +43,46 @@ class UVSim:
             instruction = self.fetch()
             self.decode_execute(instruction)
 
+    def is_valid_instruction(self, instruction):
+        if (instruction.startswith('+') or instruction.startswith('-')) and len(instruction) == 5:
+            try:
+                int(instruction)
+                return True
+            except ValueError:
+                return False
+        elif len(instruction) == 4:
+            try:
+                int(instruction)
+                return True
+            except ValueError:
+                return False
+        return False
+
 
 def load_program_from_file(filename):
     program = []
     with open(filename, 'r') as file:
         for line in file:
-            program.append(int(line.strip()))
+            line = line.strip()
+            if UVSim().is_valid_instruction(line):
+                program.append(int(line))
+            else:
+                print(f"Invalid instruction '{line}' ignored.")
     return program
 
 
 def main():
-    filename = input("Enter the program file name (ex. Test1.txt): ")
-    program = load_program_from_file(filename)
+    while True:
+        try:
+            filename = input("Enter the program file name (ex. Test1.txt): ")
+            program = load_program_from_file(filename)
+            if not program:
+                raise ValueError("No valid instructions found in the file.")
+            break
+        except FileNotFoundError:
+            print(f"File '{filename}' not found. Please try again.")
+        except ValueError as e:
+            print(e)
 
     uvsim = UVSim()
     uvsim.load_program(program)
