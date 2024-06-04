@@ -31,10 +31,31 @@ class UVSim:
 
         # Load/Store operators go here...probably.
 
-        # Arithmetic operators go here...probably.
+        elif opcode == 30:  # ADD
+            self.accumulator += self.memory[operand]
+        elif opcode == 31:  # SUBTRACT
+            self.accumulator -= self.memory[operand]
+        elif opcode == 32:  # DIVIDE
+            if self.memory[operand] == 0:
+                print("Error: Division by zero")
+                self.running = False
+            else:
+                self.accumulator //= self.memory[operand]
+        elif opcode == 33:  # MULTIPLY
+            self.accumulator *= self.memory[operand]
 
-        # Control operators go here...probably.
 
+        elif opcode == 40: #BRANCH
+            self.pc = self.memory[operand]
+
+        elif opcode == 41: #BRANCHNEG
+            if self.accumulator < 0:
+                self.pc = self.memory[operand]
+        
+        elif opcode == 42: #BRANCHZERO
+            if self.accumulator == 0:
+                self.pc = self.memory[operand]
+                
         elif opcode == 43:  # HALT
             self.running = False
 
