@@ -1,7 +1,7 @@
 import unittest
 from io import StringIO
 import sys
-from uvsim import UVSim
+from start import UVSim
 
 class TestUVSim(unittest.TestCase):
     def setUp(self):

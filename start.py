@@ -4,6 +4,7 @@ class UVSim:
         self.accumulator = 0
         self.pc = 0
         self.running = True
+        self.pointer = 0
 
     def load_program(self, program):
         for i, instruction in enumerate(program):
@@ -33,8 +34,17 @@ class UVSim:
 
         # Arithmetic operators go here...probably.
 
-        # Control operators go here...probably.
+        elif opcode == 40: #BRANCH
+            self.pointer = self.memory[operand]
 
+        elif opcode == 41: #BRANCHNEG
+            if self.accumulator < 0:
+                self.pointer = self.memory[operand]
+        
+        elif opcode == 42: #BRANCHZERO
+            if self.accumulator == 0:
+                self.pointer = self.memory[operand]
+                
         elif opcode == 43:  # HALT
             self.running = False
 
