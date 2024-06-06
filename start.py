@@ -1,4 +1,4 @@
-class UVSim: #test
+class UVSim: #testing to see if it works
     def __init__(self):
         self.memory = [0] * 100
         self.accumulator = 0
