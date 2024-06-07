@@ -19,13 +19,9 @@ class UVSim:
         operand = instruction % 100
 
         if opcode == 10:  # READ
-            while True:
-                user_input = input("Enter a four-digit number (ex. +1234, -5678): ")
-                if self.is_valid_instruction(user_input):
-                    self.memory[operand] = int(user_input)
-                    break
-                else:
-                    print("Invalid input. Please enter a valid four-digit number with an optional sign.")
+            print(
+                f"READ operation requested at memory location {operand}.")
+
         elif opcode == 11:  # WRITE
             print(self.memory[operand])
 
@@ -64,7 +60,7 @@ class UVSim:
             instruction = self.fetch()
             self.decode_execute(instruction)
 
-    def is_valid_instruction(self, instruction):
+    def is_valid_instruction(instruction):
         if (instruction.startswith('+') or instruction.startswith('-')) and len(instruction) == 5:
             try:
                 int(instruction)
