@@ -1,0 +1,16 @@
+06/05/2024
+
+Who Atteneded:
+Carson Strachan
+Spencer Nelson
+Cooper Fullmer
+Hyomin Cha
+
+Meeting Discussion:
+Checked in on everyone's progress for meeting the Milestone2 deadline.
+Discussed a possible need to changes to the codebase after this Milestone.
+*It may be necessary to change to long if/elif statement to a class based system. Will circle back after this Milestone.
+
+
+Assignments:
+No new assignments were given. Those who were done with their portions are to help out those who weren't done yet.
