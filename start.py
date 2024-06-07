@@ -31,6 +31,7 @@ class UVSim:
 
         # Load/Store operators go here...probably.
 
+        # Arithmetic operators go here...probably.
         elif opcode == 30:  # ADD
             self.accumulator += self.memory[operand]
         elif opcode == 31:  # SUBTRACT
@@ -43,7 +44,6 @@ class UVSim:
                 self.accumulator //= self.memory[operand]
         elif opcode == 33:  # MULTIPLY
             self.accumulator *= self.memory[operand]
-
 
         elif opcode == 40: #BRANCH
             self.pc = self.memory[operand]
