@@ -1,4 +1,4 @@
-class UVSim: #testing to see if it works
+class UVSim:
     def __init__(self):
         self.memory = [0] * 100
         self.accumulator = 0
@@ -13,6 +13,13 @@ class UVSim: #testing to see if it works
         instruction = self.memory[self.pc]
         self.pc += 1
         return instruction
+
+    def load(self, memLctn): #loads a word given from memLctn to the accumulator
+        self.accumulator = memLctn
+
+    def store(self, memLctn): #Stores the value from accumulator to memLctn
+        memLctn = self.accumulator
+
 
     def decode_execute(self, instruction):
         opcode = instruction // 100
@@ -29,7 +36,11 @@ class UVSim: #testing to see if it works
         elif opcode == 11:  # WRITE
             print(self.memory[operand])
 
-        # Load/Store operators go here...probably.
+        elif opcode == 20:  # Load
+            self.load(operand)
+
+        elif opcode == 21:  # WRITE
+            self.store(operand)
 
         elif opcode == 30:  # ADD
             self.accumulator += self.memory[operand]
@@ -78,6 +89,12 @@ class UVSim: #testing to see if it works
             except ValueError:
                 return False
         return False
+
+    def load(self, memLctn): #loads a word given from memLctn to the accumulator
+        self.accumulator = memLctn
+
+    def store(self, memLctn): #Stores the value from accumulator to memLctn
+        memLctn = self.accumulator
 
 
 def load_program_from_file(filename):
