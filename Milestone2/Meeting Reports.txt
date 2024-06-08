@@ -11,9 +11,9 @@
 - Cooper Fullmer
 
 **Agenda Items Discussed:**
-- Discussed CS 2810 and the LC3 simulator and how its similar to UVSim.
-- Discussed formatting and basic structure of UVSim.
-- Reviewed GitHub. How to make branches, commits, pull requests.
+- Discussed CS 2810 and the LC3 simulator and how it's similar to UVSim.
+- Discussed formatting and the basic structure of UVSim.
+- Reviewed GitHub, including how to make branches, commits, and pull requests.
 
 **Action Items To Complete Before Next Meeting:**
 - Carson: Base structure of UVSim and I/O operations.
@@ -22,10 +22,27 @@
 - Spencer: Control operations.
 
 **Other Notes:**
-- https://wchargin.com/lc3web/
-- https://www.youtube.com/watch?v=yZChqRqPluI
-- https://www.youtube.com/watch?v=iv8rSLsi1xo
-- https://github.com/warpedcanadian/cs2450
+- [LC3 Web](https://wchargin.com/lc3web/)
+- [YouTube Video 1](https://www.youtube.com/watch?v=yZChqRqPluI)
+- [YouTube Video 2](https://www.youtube.com/watch?v=iv8rSLsi1xo)
+- [GitHub Repository](https://github.com/warpedcanadian/cs2450)
 
+### June 5, 2024
 
+**Who Attended:**
+- Carson Strachan
+- Spencer Nelson (Scrum Master)
+- Hyomin Cha
+- Cooper Fullmer
 
+**Agenda Items Discussed:**
+- Checked in on everyone's progress for meeting the Milestone 2 deadline.
+- Discussed a possible need for changes to the codebase after this milestone.
+  - It may be necessary to change from a long if/elif statement to a class-based system. We will revisit this after this milestone.
+
+**Action Items To Complete Before Next Meeting:**
+- Everyone: Review Milestone 3 when it becomes available Saturday.
+- No new assignments were given. Those who have completed their portions are to help those who haven't finished yet.
+
+**Other Notes:**
+- None
