@@ -17,48 +17,60 @@ class UVSim:
     def decode_execute(self, instruction):
         opcode = instruction // 100
         operand = instruction % 100
+        print(f"Executing instruction: {instruction} (PC: {self.pc}, ACC: {self.accumulator})")
 
         if opcode == 10:  # READ
-            print(
-                f"READ operation requested at memory location {operand}.")
+            value = int(input(f"Enter an integer for memory location {operand}: "))
+            self.memory[operand] = value
 
         elif opcode == 11:  # WRITE
+            print(f"Output from memory[{operand}]: {self.memory[operand]}")
             print(self.memory[operand])
 
-         elif opcode == 20:  # Load
+        elif opcode == 20:  # LOAD
             self.accumulator = self.memory[operand]
+            print(f"Loaded {self.accumulator} into accumulator from memory[{operand}]")
 
-        elif opcode == 21:  # Store
+        elif opcode == 21:  # STORE
             self.memory[operand] = self.accumulator
+            print(f"Stored {self.accumulator} from accumulator into memory[{operand}]")
 
-        # Arithmetic operators go here...probably.
         elif opcode == 30:  # ADD
             self.accumulator += self.memory[operand]
-            
+            print(f"Added {self.memory[operand]} to accumulator, new value: {self.accumulator}")
+
         elif opcode == 31:  # SUBTRACT
             self.accumulator -= self.memory[operand]
-            
+            print(f"Subtracted {self.memory[operand]} from accumulator, new value: {self.accumulator}")
+
         elif opcode == 32:  # DIVIDE
             if self.memory[operand] == 0:
                 print("Error: Division by zero")
                 self.running = False
             else:
                 self.accumulator //= self.memory[operand]
+                print(f"Divided accumulator by {self.memory[operand]}, new value: {self.accumulator}")
+
         elif opcode == 33:  # MULTIPLY
             self.accumulator *= self.memory[operand]
+            print(f"Multiplied accumulator by {self.memory[operand]}, new value: {self.accumulator}")
 
-        elif opcode == 40: #BRANCH
-            self.pc = self.memory[operand]
+        elif opcode == 40:  # BRANCH
+            self.pc = operand
+            print(f"Branched to address {operand}")
 
-        elif opcode == 41: #BRANCHNEG
+        elif opcode == 41:  # BRANCHNEG
             if self.accumulator < 0:
-                self.pc = self.memory[operand]
-        
-        elif opcode == 42: #BRANCHZERO
+                self.pc = operand
+                print(f"Branched to address {operand} because accumulator is negative")
+
+        elif opcode == 42:  # BRANCHZERO
             if self.accumulator == 0:
-                self.pc = self.memory[operand]
-                
+                self.pc = operand
+                print(f"Branched to address {operand} because accumulator is zero")
+
         elif opcode == 43:  # HALT
+            print("Halting execution")
             self.running = False
 
     def run(self):
@@ -66,7 +78,7 @@ class UVSim:
             instruction = self.fetch()
             self.decode_execute(instruction)
 
-    def is_valid_instruction(instruction):
+    def is_valid_instruction(self, instruction):
         if (instruction.startswith('+') or instruction.startswith('-')) and len(instruction) == 5:
             try:
                 int(instruction)
@@ -81,7 +93,6 @@ class UVSim:
                 return False
         return False
 
-
 def load_program_from_file(filename):
     program = []
     with open(filename, 'r') as file:
@@ -92,7 +103,6 @@ def load_program_from_file(filename):
             else:
                 print(f"Invalid instruction '{line}' ignored.")
     return program
-
 
 def main():
     while True:
@@ -110,7 +120,6 @@ def main():
     uvsim = UVSim()
     uvsim.load_program(program)
     uvsim.run()
-
 
 if __name__ == "__main__":
     main()
