@@ -29,16 +29,18 @@ class UVSim:
         elif opcode == 11:  # WRITE
             print(self.memory[operand])
 
-        elif opcode == 20:  # Load
-            self.accumulator = operand
+         elif opcode == 20:  # Load
+            self.accumulator = self.memory[operand]
 
         elif opcode == 21:  # Store
-            operand = self.accumulator
+            self.memory[operand] = self.accumulator
 
         elif opcode == 30:  # ADD
             self.accumulator += self.memory[operand]
+            
         elif opcode == 31:  # SUBTRACT
             self.accumulator -= self.memory[operand]
+            
         elif opcode == 32:  # DIVIDE
             if self.memory[operand] == 0:
                 print("Error: Division by zero")
