@@ -33,9 +33,11 @@ class UVSim:
 
         elif opcode == 30:  # ADD
             self.accumulator += self.memory[operand]
+            self.check_overflow()
 
         elif opcode == 31:  # SUBTRACT
             self.accumulator -= self.memory[operand]
+            self.check_overflow()
 
         elif opcode == 32:  # DIVIDE
             if self.memory[operand] == 0:
@@ -43,9 +45,11 @@ class UVSim:
                 self.running = False
             else:
                 self.accumulator //= self.memory[operand]
+                self.check_overflow()
 
         elif opcode == 33:  # MULTIPLY
             self.accumulator *= self.memory[operand]
+            self.check_overflow()
 
         elif opcode == 40:  # BRANCH
             self.pc = operand
@@ -61,6 +65,12 @@ class UVSim:
         elif opcode == 43:  # HALT
             print("Halting execution")
             self.running = False
+
+    def check_overflow(self):
+        if self.accumulator > 9999:
+            self.accumulator = 9999
+        elif self.accumulator < -9999:
+            self.accumulator = -9999
 
     def run(self):
         while self.running:

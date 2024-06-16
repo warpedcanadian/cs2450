@@ -1,0 +1,115 @@
+# User Stories and Use Cases
+
+## Use Case 1: Load a BasicML Program into UVSim's Memory
+- **Actor:** UVSim
+- **Goal:** Load a BasicML program into the simulator's memory.
+- **Description:**
+  1. UVSim receives the BasicML program input.
+  2. UVSim parses the input program line by line.
+  3. For each instruction, UVSim converts it into the appropriate machine code.
+  4. UVSim stores the machine code into the corresponding memory location starting from location 00.
+- **Preconditions:** A BasicML program is available for input.
+- **Postconditions:** The BasicML program is stored in UVSim's memory starting at location 00.
+
+## Use Case 2: Execute a BasicML Program Loaded in UVSim's Memory
+- **Actor:** UVSim
+- **Goal:** Execute a BasicML program loaded in the simulator's memory.
+- **Description:**
+  1. UVSim starts execution from the initial memory location (00).
+  2. UVSim fetches the instruction from the current memory location.
+  3. UVSim decodes the fetched instruction to determine the operation and the operand.
+  4. UVSim executes the decoded instruction.
+     - If the instruction is arithmetic (ADD, SUBTRACT, MULTIPLY, DIVIDE), UVSim updates the accumulator accordingly.
+     - If the instruction is a control operation (LOAD, STORE, READ, WRITE, HALT), UVSim performs the respective operation.
+  5. UVSim increments the program counter to fetch the next instruction.
+  6. UVSim repeats steps 2-5 until a HALT instruction is encountered.
+- **Preconditions:** A BasicML program is loaded in UVSim's memory.
+- **Postconditions:** The BasicML program executes to completion or until a HALT instruction is encountered.
+
+## Use Case 3: Perform Arithmetic Operations Using BasicML Instructions
+- **Actor:** UVSim
+- **Goal:** Perform arithmetic operations using BasicML instructions.
+- **Description:**
+  1. UVSim encounters an arithmetic instruction in the program.
+  2. UVSim decodes the instruction to identify the operation (ADD, SUBTRACT, MULTIPLY, DIVIDE) and the operand.
+  3. UVSim fetches the operand from the specified memory location.
+  4. UVSim performs the arithmetic operation using the operand and the current value in the accumulator.
+  5. UVSim updates the accumulator with the result of the operation.
+- **Preconditions:** The BasicML program includes valid arithmetic instructions and is loaded into memory.
+- **Postconditions:** The accumulator contains the result of the arithmetic operations.
+
+## Use Case 4: Write Output from the Simulator to the Screen Using BasicML Instructions
+- **Actor:** UVSim
+- **Goal:** Write output from the simulator to the screen using BasicML instructions.
+- **Description:**
+  1. UVSim encounters a WRITE instruction in the program.
+  2. UVSim decodes the WRITE instruction to determine the memory location to read from.
+  3. UVSim fetches the data from the specified memory location.
+  4. UVSim writes the fetched data to the screen.
+- **Preconditions:** The BasicML program includes valid WRITE instructions and is loaded into memory.
+- **Postconditions:** The output specified by the WRITE instructions is displayed on the screen.
+
+## Use Case 5: READ Function
+- **Actor:** UVSim
+- **Goal:** Read a word from the console and store it in a specific memory location.
+- **Description:**
+  1. UVSim encounters a READ instruction in the program.
+  2. UVSim decodes the READ instruction to determine the memory location to store the input.
+  3. UVSim prompts the user to input a word from the console.
+  4. UVSim stores the input word in the specified memory location.
+- **Preconditions:** A word to be read is available.
+- **Postconditions:** The word is stored in the specified memory location.
+
+## Use Case 6: WRITE Function
+- **Actor:** UVSim
+- **Goal:** Write a word from a specific memory location to the console.
+- **Description:**
+  1. UVSim encounters a WRITE instruction in the program.
+  2. UVSim decodes the WRITE instruction to determine the memory location to read from.
+  3. UVSim fetches the word from the specified memory location.
+  4. UVSim writes the word to the console.
+- **Preconditions:** A word is stored in the specified memory location.
+- **Postconditions:** The word is written to the console.
+
+## Use Case 7: LOAD Function
+- **Actor:** UVSim
+- **Goal:** Load a word from a specific memory location into the accumulator.
+- **Description:**
+  1. UVSim encounters a LOAD instruction in the program.
+  2. UVSim decodes the LOAD instruction to determine the memory location to read from.
+  3. UVSim fetches the word from the specified memory location.
+  4. UVSim loads the word into the accumulator.
+- **Preconditions:** A word is stored in the specified memory location.
+- **Postconditions:** The accumulator contains the word from the specified memory location.
+
+## Use Case 8: STORE Function
+- **Actor:** UVSim
+- **Goal:** Store the word from the accumulator into a specific memory location.
+- **Description:**
+  1. UVSim encounters a STORE instruction in the program.
+  2. UVSim decodes the STORE instruction to determine the memory location to write to.
+  3. UVSim stores the word from the accumulator into the specified memory location.
+- **Preconditions:** The accumulator contains a word.
+- **Postconditions:** The word is stored in the specified memory location.
+
+## Use Case 9: Write to Console
+- **Actor:** UVSim
+- **Goal:** Write a word to the console from a specific location when the write command is called.
+- **Description:**
+  1. UVSim encounters a WRITE instruction in the program.
+  2. UVSim decodes the WRITE instruction to determine the memory location to read from.
+  3. UVSim fetches the word from the specified memory location.
+  4. UVSim writes the word to the console.
+- **Preconditions:** The BasicML program includes a valid WRITE instruction and is loaded into memory.
+- **Postconditions:** The word is written to the console.
+
+## Use Case 10: Read from Console
+- **Actor:** UVSim
+- **Goal:** Read a word from the console and store it in a specific memory location.
+- **Description:**
+  1. UVSim encounters a READ instruction in the program.
+  2. UVSim decodes the READ instruction to determine the memory location to write to.
+  3. UVSim prompts the user to input a word from the console.
+  4. UVSim stores the input word in the specified memory location.
+- **Preconditions:** The BasicML program includes a valid READ instruction and is loaded into memory.
+- **Postconditions:** The word is stored in the specified memory location.
