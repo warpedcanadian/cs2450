@@ -17,7 +17,13 @@ class UVSim:
     def decode_execute(self, instruction):
         opcode = instruction // 100
         operand = instruction % 100
-
+        class_id_dict = {10:Read, 11: Write, 20:Load, 21:Store, 30:Add, 31:Subtract, 32:Divide, 33:Multiply, 
+                         40:Branch, 41: BranchNeg, 42: BranchZero, 43: Halt }
+        
+        for key, value in class_id_dict:
+            opcode = key
+            if opcode in class_id_dict:
+                class_id_dict[opcode](value)
         if opcode == 10:  # READ
             value = int(input(f"Enter an integer for memory location {operand}: "))
             self.memory[operand] = value
@@ -91,7 +97,7 @@ class BranchNeg(UVSim):
         if self.accumulator < 0:
             self.pc = operand
         return self.pc
-class BranchNeg(UVSim):
+class BranchZero(UVSim):
      def __init__(self, operand): 
         super().__init__()           
         if self.accumulator == 0:
