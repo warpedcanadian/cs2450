@@ -46,22 +46,6 @@ class UVSim:
 
         elif opcode == 33:  # MULTIPLY
             self.accumulator *= self.memory[operand]
-
-        elif opcode == 40:  # BRANCH
-            self.pc = operand
-
-        elif opcode == 41:  # BRANCHNEG
-            if self.accumulator < 0:
-                self.pc = operand
-
-        elif opcode == 42:  # BRANCHZERO
-            if self.accumulator == 0:
-                self.pc = operand
-
-        elif opcode == 43:  # HALT
-            print("Halting execution")
-            self.running = False
-
     def run(self):
         while self.running:
             instruction = self.fetch()
@@ -96,7 +80,29 @@ def load_program_from_file(filename):
                     print(f"Invalid instruction '{line}' ignored.")
     return program
 
+class Branch(UVSim):
+    def __init__(self, operand):
+        super().__init__()
+        self.pc = operand
 
+class BranchNeg(UVSim):
+     def __init__(self, operand):
+        super().__init__()
+        if self.accumulator < 0:
+            self.pc = operand
+        return self.pc
+class BranchNeg(UVSim):
+     def __init__(self, operand): 
+        super().__init__()           
+        if self.accumulator == 0:
+            self.pc = operand
+        return self.pc
+class Halt(UVSim):
+     def __init__(self):
+        super().__init__()
+        print("Halting execution")
+        self.running = False
+        return self.running
 def main():
     while True:
         try:
