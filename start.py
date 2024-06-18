@@ -17,8 +17,20 @@ class UVSim:
     def decode_execute(self, instruction):
         opcode = instruction // 100
         operand = instruction % 100
-        class_id_dict = {10:Read, 11: Write, 20:Load, 21:Store, 30:Add, 31:Subtract, 32:Divide, 33:Multiply, 
-                         40:Branch, 41: BranchNeg, 42: BranchZero, 43: Halt }
+        class_id_dict = {
+            10: Read, 
+            11: Write, 
+            20: Load, 
+            21: Store, 
+            30: Add, 
+            31: Subtract, 
+            32 :Divide, 
+            33: Multiply, 
+            40: Branch, 
+            41: BranchNeg, 
+            42: BranchZero, 
+            43: Halt 
+        }
         
         for key, value in class_id_dict:
             opcode = key
@@ -86,6 +98,22 @@ def load_program_from_file(filename):
                     print(f"Invalid instruction '{line}' ignored.")
     return program
 
+class Read(UVSim):
+    pass
+class Write(UVSim):
+    pass
+class Load(UVSim):
+    pass
+class Store(UVSim):
+    pass
+class Add(UVSim):
+    pass
+class Subtract(UVSim):
+    pass
+class Multiply(UVSim):
+    pass
+class Divide(UVSim):
+    pass
 class Branch(UVSim):
     def __init__(self, operand):
         super().__init__()
