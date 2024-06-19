@@ -17,54 +17,32 @@ class UVSim:
     def decode_execute(self, instruction):
         opcode = instruction // 100
         operand = instruction % 100
-
-        if opcode == 10:  # READ
-            while True:
-                user_input = input("Enter a four-digit number (ex. +1234, -5678): ")
-                if self.is_valid_instruction(user_input):
-                    self.memory[operand] = int(user_input)
-                    break
-                else:
-                    print("Invalid input. Please enter a valid four-digit number with an optional sign.")
-        elif opcode == 11:  # WRITE
-            print(self.memory[operand])
-
-        # Load/Store operators go here...probably.
-
-        elif opcode == 30:  # ADD
-            self.accumulator += self.memory[operand]
-        elif opcode == 31:  # SUBTRACT
-            self.accumulator -= self.memory[operand]
-        elif opcode == 32:  # DIVIDE
-            if self.memory[operand] == 0:
-                print("Error: Division by zero")
-                self.running = False
-            else:
-                self.accumulator //= self.memory[operand]
-        elif opcode == 33:  # MULTIPLY
-            self.accumulator *= self.memory[operand]
-
-
-        elif opcode == 40: #BRANCH
-            self.pc = self.memory[operand]
-
-        elif opcode == 41: #BRANCHNEG
-            if self.accumulator < 0:
-                self.pc = self.memory[operand]
+        operation_classes = {
+            10: Read,
+            11: Write,
+            20: Load,
+            21: Store,
+            30: Add,
+            31: Subtract,
+            32: Divide,
+            33: Multiply,
+            40: Branch,
+            41: BranchNeg,
+            42: BranchZero,
+            43: Halt
+        }
         
-        elif opcode == 42: #BRANCHZERO
-            if self.accumulator == 0:
-                self.pc = self.memory[operand]
-                
-        elif opcode == 43:  # HALT
-            self.running = False
+        if opcode in operation_classes:
+            operation = operation_classes[opcode](self, operand)
+            operation.execute()
 
     def run(self):
         while self.running:
             instruction = self.fetch()
             self.decode_execute(instruction)
 
-    def is_valid_instruction(self, instruction):
+    @staticmethod
+    def is_valid_instruction(instruction):
         if (instruction.startswith('+') or instruction.startswith('-')) and len(instruction) == 5:
             try:
                 int(instruction)
@@ -79,16 +57,107 @@ class UVSim:
                 return False
         return False
 
+    def check_overflow(self, value):
+        max_val = 9999
+        min_val = -9999
+        if value > max_val:
+            return max_val
+        elif value < min_val:
+            return min_val
+        return value
+
+
+class Operation:
+    def __init__(self, sim, operand):
+        self.sim = sim
+        self.operand = operand
+
+    def execute(self):
+        raise NotImplementedError("This method should be overridden by subclasses")
+
+
+class Read(Operation):
+    def execute(self):
+        value = int(input(f"Enter an integer for memory location {self.operand}: "))
+        self.sim.memory[self.operand] = value
+
+
+class Write(Operation):
+    def execute(self):
+        print(self.sim.memory[self.operand])
+
+
+class Load(Operation):
+    def execute(self):
+        self.sim.accumulator = self.sim.memory[self.operand]
+
+
+class Store(Operation):
+    def execute(self):
+        self.sim.memory[self.operand] = self.sim.accumulator
+
+
+class Add(Operation):
+    def execute(self):
+        self.sim.accumulator += self.sim.memory[self.operand]
+        self.sim.accumulator = self.sim.check_overflow(self.sim.accumulator)
+
+
+class Subtract(Operation):
+    def execute(self):
+        self.sim.accumulator -= self.sim.memory[self.operand]
+        self.sim.accumulator = self.sim.check_overflow(self.sim.accumulator)
+
+
+class Multiply(Operation):
+    def execute(self):
+        self.sim.accumulator *= self.sim.memory[self.operand]
+        self.sim.accumulator = self.sim.check_overflow(self.sim.accumulator)
+
+
+class Divide(Operation):
+    def execute(self):
+        if self.sim.memory[self.operand] == 0:
+            print("Error: Division by zero")
+            self.sim.running = False
+        else:
+            self.sim.accumulator //= self.sim.memory[self.operand]
+            self.sim.accumulator = self.sim.check_overflow(self.sim.accumulator)
+
+
+class Branch(Operation):
+    def execute(self):
+        self.sim.pc = self.operand
+
+
+class BranchNeg(Operation):
+    def execute(self):
+        if self.sim.accumulator < 0:
+            self.sim.pc = self.operand
+
+
+class BranchZero(Operation):
+    def execute(self):
+        if self.sim.accumulator == 0:
+            self.sim.pc = self.operand
+
+
+class Halt(Operation):
+    def execute(self):
+        print("Halting execution")
+        self.sim.running = False
+
 
 def load_program_from_file(filename):
     program = []
     with open(filename, 'r') as file:
         for line in file:
             line = line.strip()
-            if UVSim().is_valid_instruction(line):
-                program.append(int(line))
-            else:
-                print(f"Invalid instruction '{line}' ignored.")
+            if line:
+                if UVSim.is_valid_instruction(line):
+                    program.append(int(line))
+                else:
+                    print(f"Invalid instruction '{line}' ignored.")
     return program
 
 
