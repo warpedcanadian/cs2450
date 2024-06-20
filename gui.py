@@ -118,7 +118,7 @@ class UVSimGUI:
         self.status_bar.config(text="Status: Stopped")
 
     def show_about(self):
-        messagebox.showinfo("About", "UVSim - Universal Virtual Simulator")
+        messagebox.showinfo("About", "UVSim - UVU Simulator")
 
     def display_message(self, message):
         messagebox.showinfo("Information", message)
