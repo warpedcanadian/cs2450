@@ -1,12 +1,18 @@
+import gui
+import os
+import sys
+import subprocess
+
 class UVSim:
-    def __init__(self):
-        self.memory = [0] * 100
+    def __init__(self, raw_data):
+        self.memory = [None] * 100
         self.accumulator = 0
         self.pc = 0
         self.running = True
-
-    def load_program(self, program):
-        for i, instruction in enumerate(program):
+        self.raw_data = raw_data
+        
+        print(raw_data)
+        for i, instruction in enumerate(raw_data):
             self.memory[i] = instruction
 
     def fetch(self):
@@ -18,24 +24,26 @@ class UVSim:
         opcode = instruction // 100
         operand = instruction % 100
         class_id_dict = {
-            10: Read, 
-            11: Write, 
-            20: Load, 
-            21: Store, 
-            30: Add, 
-            31: Subtract, 
-            32 :Divide, 
-            33: Multiply, 
-            40: Branch, 
-            41: BranchNeg, 
-            42: BranchZero, 
-            43: Halt 
+            10: Read(operand), 
+            11: Write(operand), 
+            20: Load(operand), 
+            21: Store(operand), 
+            30: Add(operand), 
+            31: Subtract(operand), 
+            32 :Divide(operand), 
+            33: Multiply(operand), 
+            40: Branch(operand), 
+            41: BranchNeg(operand), 
+            42: BranchZero(operand), 
+            43: Halt(operand) 
         }
         
-        for key, value in class_id_dict:
-            opcode = key
-            if opcode in class_id_dict:
+        for opcode, value in class_id_dict.items():
+            if not opcode in class_id_dict:
+                raise ValueError('Invalid opcode')
+            else:
                 class_id_dict[opcode](value)
+        '''        
         if opcode == 10:  # READ
             value = int(input(f"Enter an integer for memory location {operand}: "))
             self.memory[operand] = value
@@ -64,6 +72,7 @@ class UVSim:
 
         elif opcode == 33:  # MULTIPLY
             self.accumulator *= self.memory[operand]
+        '''
     def run(self):
         while self.running:
             instruction = self.fetch()
@@ -99,61 +108,88 @@ def load_program_from_file(filename):
     return program
 
 class Read(UVSim):
-    pass
+    def __init__(self, raw_data, operand):
+        super().__init__(raw_data)
+        value = int(input(f"Enter an integer for memory location {operand}: "))
+        self.memory[operand] = value
 class Write(UVSim):
-    pass
+     def __init__(self, raw_data, operand):
+        super().__init__(raw_data)
+        print(self.memory[operand])
+
 class Load(UVSim):
-    pass
+    def __init__(self, raw_data, operand):
+        super().__init__(raw_data)
+        self.accumulator = self.memory[operand]
 class Store(UVSim):
-    pass
+    def __init__(self, raw_data, operand):
+        super().__init__(raw_data)
+        self.memory[operand] = self.accumulator
 class Add(UVSim):
-    pass
+    def __init__(self, raw_data, operand):
+        super().__init__(raw_data)
+        if self.memory[operand] == None:
+            print('Nothing to add')
+            return
+        else:
+            self.accumulator += self.memory[operand]
 class Subtract(UVSim):
-    pass
+    def __init__(self, raw_data, operand):
+        super().__init__(raw_data)
+        if self.memory[operand] == None:
+            print('Nothing to subtract')
+        else:
+            self.accumulator -= self.memory[operand]
 class Multiply(UVSim):
-    pass
+    def __init__(self, raw_data, operand):
+        super().__init__(raw_data)
+        if self.memory[operand] == None:
+            print('Nothing to multiply by')
+            return
+        else:
+            self.accumulator *= self.memory[operand]
 class Divide(UVSim):
-    pass
+    def __init__(self, raw_data, operand):
+        super().__init__(raw_data)
+        if self.memory[operand] == 0:
+            print("Error: Division by zero")
+            self.running = False
+        elif self.memory[operand] == None:
+            print('Nothing to divide by')
+            return
+        else:
+            self.accumulator /= self.memory[operand] 
 class Branch(UVSim):
-    def __init__(self, operand):
-        super().__init__()
+    def __init__(self, raw_data, operand):
+        super().__init__(raw_data)
         self.pc = operand
 
 class BranchNeg(UVSim):
-     def __init__(self, operand):
-        super().__init__()
+     def __init__(self, raw_data, operand):
+        super().__init__(raw_data)
         if self.accumulator < 0:
             self.pc = operand
         return self.pc
 class BranchZero(UVSim):
-     def __init__(self, operand): 
-        super().__init__()           
+     def __init__(self, raw_data, operand):
+        super().__init__(raw_data)         
         if self.accumulator == 0:
             self.pc = operand
         return self.pc
 class Halt(UVSim):
-     def __init__(self):
-        super().__init__()
+     def __init__(self, raw_data, operand):
+        super().__init__(raw_data)
         print("Halting execution")
         self.running = False
         return self.running
+     
 def main():
+    get_file = gui.file_open()   
+    uvsim = UVSim(get_file)
+    #uvsim.load_program(get_file)
+    gui.window.mainloop()
     while True:
-        try:
-            filename = input("Enter the program file name (ex. Test1.txt): ")
-            program = load_program_from_file(filename)
-            if not program:
-                raise ValueError("No valid instructions found in the file.")
-            break
-        except FileNotFoundError:
-            print(f"File '{filename}' not found. Please try again.")
-        except ValueError as e:
-            print(e)
-
-    uvsim = UVSim()
-    uvsim.load_program(program)
-    uvsim.run()
-
-
+        uvsim.run()   
+        
 if __name__ == "__main__":
     main()
