@@ -71,8 +71,7 @@ Using the GUI
     - Click on Stop from the toolbar to halt the execution of the program.
 
 4. Handling Input:
-  - During the execution, if a READ instruction is encountered, an input dialog will       
-    appear asking for an integer input. Enter the value and press Enter or click Submit.      
+  - During the execution, if a READ instruction is encountered, an input dialog will appear asking for an integer input. Enter the value and press Enter or click Submit.      
 
 Unit Testing
 ------------
