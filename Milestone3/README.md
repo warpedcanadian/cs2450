@@ -41,7 +41,7 @@ Using the GUI
     - About: Display information about the application.
   
   - Toolbar:
-    -Open File: Open a .txt file containing the BasicML program. This will load the program into the simulator.
+   - Open File: Open a .txt file containing the BasicML program. This will load the program into the simulator.
     -Run: Execute the loaded BasicML program.
     -Stop: Stop the execution of the program.
   
