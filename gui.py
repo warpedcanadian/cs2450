@@ -3,6 +3,8 @@ from tkinter import filedialog, messagebox, simpledialog
 from tkinter import ttk
 from start import UVSim, load_program_from_file
 
+
+
 class UVSimGUI:
     def __init__(self, root):
         self.root = root
@@ -128,10 +130,3 @@ class UVSimGUI:
         self.pc_label.config(text=f"Program Counter: [{self.uvsim.pc:04}]")
         self.display_memory()
 
-def main():
-    root = tk.Tk()
-    app = UVSimGUI(root)
-    root.mainloop()
-
-if __name__ == "__main__":
-    main()

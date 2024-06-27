@@ -1,17 +1,18 @@
 import tkinter as tk
 from tkinter import messagebox
+from gui import UVSimGUI
 
 class UVSim:
-    def __init__(self):
+    def __init__(self, gui):
         self.memory = [0] * 100
         self.accumulator = 0
         self.pc = 0
         self.running = True
         self.waiting_for_input = False
-        self.gui = None
-
-    def set_gui(self, gui):
         self.gui = gui
+
+    #def set_gui(self, gui):
+        #self.gui = gui
 
     def load_program(self, program):
         self.memory = [0] * 100
@@ -60,12 +61,9 @@ class UVSim:
 
     @staticmethod
     def is_valid_instruction(instruction):
-        if (instruction.startswith('+') or instruction.startswith('-')) and len(instruction) == 5:
-            try:
-                int(instruction)
-                return True
-            except ValueError:
-                return False
+        if (instruction.startswith('+') or instruction.startswith('-')) and len(instruction) > 4:
+            new_instruction = instruction[-4:-1]
+            return new_instruction
         elif len(instruction) == 4:
             try:
                 int(instruction)
@@ -74,14 +72,10 @@ class UVSim:
                 return False
         return False
 
-    def check_overflow(self, value):
-        max_val = 9999
-        min_val = -9999
-        if value > max_val:
-            return max_val
-        elif value < min_val:
-            return min_val
-        return value
+    #def check_overflow(self, value):
+        #if len(value) > 4:
+           # new_value = value[-4:-1]
+        #return new_value
 
 class Operation:
     def __init__(self, sim, operand):
@@ -196,6 +190,15 @@ def load_program_from_file(filename):
                 else:
                     print(f"Invalid instruction '{line}' ignored.")
     return program
+
+def main():
+ root = tk.Tk()
+ interface = UVSimGUI(root)
+ app = UVSim()
+ load_program_from_file()
+ app.load_program()
+ app.fetch()
+ root.mainloop()
 
 if __name__ == "__main__":
     import gui
