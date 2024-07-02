@@ -15,7 +15,7 @@ class UVSim:
         self.gui = gui
 
     def load_program(self, program):
-        self.memory = [0] * 100
+        #self.memory = [0] * 100
         for i, instruction in enumerate(program):
             self.memory[i] = instruction
         self.accumulator = 0
@@ -158,11 +158,10 @@ class Halt(Operation):
 def main():
  root = tk.Tk()
  interface = UVSimGUI(root)
- get_file = interface.load_file()
  app = UVSim()
- app.load_program(get_file)
- app.run()
- 
+ #app.load_program()
+ #app.run()
+ root.mainloop()
 
 if __name__ == "__main__":
     main()

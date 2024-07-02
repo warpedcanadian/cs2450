@@ -3,7 +3,7 @@ from tkinter import filedialog, messagebox, simpledialog
 from tkinter import ttk
 #from start import UVSim
 from utils import load_program_from_file
-root = tk.Tk()
+#root = tk.Tk()
 
 class UVSimGUI:
     def __init__(self, root):
@@ -85,6 +85,7 @@ class UVSimGUI:
 
     def load_file(self):
         filename = filedialog.askopenfilename(title="Open File", filetypes=(("Text Files", "*.txt"), ("All Files", "*.*")))
+        print(filename)
         if filename:
             self.program = load_program_from_file(filename)
             if not self.program:
@@ -155,4 +156,4 @@ class UVSimGUI:
 
         value = input_var.get()
         return value           
-    root.mainloop()
+    #root.mainloop()
