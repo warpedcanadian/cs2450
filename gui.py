@@ -1,13 +1,15 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox, simpledialog
 from tkinter import ttk
-from start import UVSim, load_program_from_file
+#from start import UVSim
+from utils import load_program_from_file
+#root = tk.Tk()
 
 class UVSimGUI:
     def __init__(self, root):
         self.root = root
-        self.uvsim = UVSim()
-        self.uvsim.set_gui(self)
+        #self.uvsim = UVSim()
+        #self.uvsim.set_gui(self)
         self.create_widgets()
         self.program = []
 
@@ -83,16 +85,17 @@ class UVSimGUI:
 
     def load_file(self):
         filename = filedialog.askopenfilename(title="Open File", filetypes=(("Text Files", "*.txt"), ("All Files", "*.*")))
+        print(filename)
         if filename:
             self.program = load_program_from_file(filename)
             if not self.program:
                 messagebox.showerror("Error", "No valid instructions found in the file.")
                 return
-            self.uvsim.load_program(self.program)
             self.display_program(self.program)
             self.display_memory()
             self.status_label.config(text="Status: Program Loaded")
             self.status_bar.config(text="Status: Program Loaded")
+            return self.program
 
     def display_program(self, program):
         self.program_text.delete(1.0, tk.END)
@@ -127,11 +130,30 @@ class UVSimGUI:
         self.accumulator_label.config(text=f"Accumulator: [{self.uvsim.accumulator:04}]")
         self.pc_label.config(text=f"Program Counter: [{self.uvsim.pc:04}]")
         self.display_memory()
+    
+    def read_output(self, operand):
+        input_dialog = tk.Toplevel(self.root)
+        input_dialog.title("Input")
+        tk.Label(input_dialog, text=f"Enter an integer for memory location {operand}:").pack()
+        input_var = tk.IntVar()
 
-def main():
-    root = tk.Tk()
-    app = UVSimGUI(root)
-    root.mainloop()
+        def on_submit(event=None):
+            try:
+                value = int(entry.get())
+                input_var.set(value)
+                input_dialog.destroy()
+            except ValueError:
+                messagebox.showerror("Invalid input", "Please enter a valid integer.")
 
-if __name__ == "__main__":
-    main()
+        entry = tk.Entry(input_dialog)
+        entry.pack()
+        entry.bind("<Return>", on_submit)
+        tk.Button(input_dialog, text="Submit", command=on_submit).pack()
+        input_dialog.transient(self.root)
+        input_dialog.grab_set()
+        input_dialog.geometry(f"+{self.root.winfo_rootx() + self.root.winfo_width() // 2 - input_dialog.winfo_reqwidth() // 2}+{self.root.winfo_rooty() + self.root.winfo_height() // 2 - input_dialog.winfo_reqheight() // 2}")
+        self.root.wait_window(input_dialog)
+
+        value = input_var.get()
+        return value           
+    #root.mainloop()
