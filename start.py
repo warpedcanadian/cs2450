@@ -78,9 +78,9 @@ class UVSim:
         max_val = 9999
         min_val = -9999
         if value > max_val:
-            return max_val
+            return value % (max_val + 1)
         elif value < min_val:
-            return min_val
+            return -(abs(value) % (max_val + 1))
         return value
 
 class Operation:
