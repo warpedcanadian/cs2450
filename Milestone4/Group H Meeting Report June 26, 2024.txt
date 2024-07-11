@@ -1,0 +1,16 @@
+June 26, 2024
+
+Who Attended:
+Spencer Nelson
+Carson Strachan
+Hyomin Cha
+
+Agenda:
+-Review Milestone 3 feedback
+-Define truncate: Cut off reading at 4th digit, regardless of how long the instruction is
+-Adjust code base to combine like classes
+
+Assignments:
+-Carson will create TODO document
+-Spencer will create the class definition doc
+-Everyone will start making changes to the GUI and compare notes for next week

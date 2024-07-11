@@ -1,0 +1,25 @@
+Spencer talked to professor
+
+Functional Requirements:
+
+system should allow the user to load BasicML program files into a UVSim
+system should parse BasicML line sequentially
+system should store code starting from line 00
+system should get instructions starting from line 00
+system should decode using the code and the opperand
+code should be well organized and clear
+systems should execute arithmetic expressions
+systems will increment after each command
+system will have a functioning read function to take instructions from user
+system will be able to write to user
+system will have a stop and start function
+system will display contents of memory
+system will write error messages
+system will allow user to start and stop the program
+system will handle overflow
+
+Nonfunctional Requirements
+
+Gui should be clearly navigable
+the system should execute commands within 3 seconds or less
+the system should manage overflow memory

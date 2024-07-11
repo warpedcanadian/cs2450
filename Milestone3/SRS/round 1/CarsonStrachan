@@ -1,0 +1,59 @@
+# Software Requirements Specification (SRS)
+ 
+## 1. Introduction
+ 
+This document outlines the software requirements for the UVSim, a software simulator designed for educational purposes to help computer science students learn machine language and computer architecture through the use of BasicML.
+ 
+## 2. Functional Requirements
+ 
+1. **The system shall read a word from the keyboard into a specific memory location.**
+   - Operation code: 10
+ 
+2. **The system shall write a word from a specific memory location to the screen.**
+   - Operation code: 11
+ 
+3. **The system shall load a word from a specific memory location into the accumulator.**
+   - Operation code: 20
+ 
+4. **The system shall store a word from the accumulator into a specific memory location.**
+   - Operation code: 21
+ 
+5. **The system shall add a word from a specific memory location to the word in the accumulator and leave the result in the accumulator.**
+   - Operation code: 30
+ 
+6. **The system shall subtract a word from a specific memory location from the word in the accumulator and leave the result in the accumulator.**
+   - Operation code: 31
+ 
+7. **The system shall divide the word in the accumulator by a word from a specific memory location and leave the result in the accumulator.**
+   - Operation code: 32
+ 
+8. **The system shall multiply a word from a specific memory location by the word in the accumulator and leave the result in the accumulator.**
+   - Operation code: 33
+ 
+9. **The system shall branch to a specific memory location unconditionally.**
+   - Operation code: 40
+ 
+10. **The system shall branch to a specific memory location if the accumulator is negative.**
+	- Operation code: 41
+ 
+11. **The system shall branch to a specific memory location if the accumulator is zero.**
+	- Operation code: 42
+ 
+12. **The system shall stop the program when a HALT instruction is encountered.**
+	- Operation code: 43
+ 
+13. **The system shall initialize the accumulator to zero at the start of the program.**
+ 
+14. **The system shall display an error message and halt execution if a division by zero is attempted.**
+ 
+15. **The system shall provide an interface to load a BasicML program into memory starting at location 00.**
+ 
+
+## 3. Non-Functional Requirements
+ 
+1. **The system shall have a user-friendly interface that allows easy input of BasicML instructions and display of outputs.**
+ 
+2. **The system shall be designed to handle up to 100 BasicML instructions in memory efficiently.**
+ 
+3. **The system shall provide clear error messages for invalid instructions or operations to aid in debugging and learning.**
+

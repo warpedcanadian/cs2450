@@ -1,0 +1,16 @@
+June 6, 2024
+
+Who attended:
+Carson Stratton
+Hyomin Cha
+Cooper Fullmer
+Spencer Nelson
+
+Agenda:
+- Touch base on Milestone 3
+- Spencer and Cooper will be one subgroup with Carson and Hyomin in another
+
+Assignments:
+- Everyone will update the Class definition doc for the classes they worked on
+- Hyomin will handle the GUI design/ how to use the GUI doc
+- Cooper will compile all SRS docs once subgroup merging is done

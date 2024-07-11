@@ -1,0 +1,22 @@
+Functional Requirements
+The system shall allow the user to load a BasicML program file into UVSim.
+The system shall parse the BasicML program line by line.
+The system shall convert each BasicML instruction into the corresponding machine code.
+The system shall store the machine code into memory starting from location 00.
+The system shall fetch instructions from memory starting at location 00.
+The system shall decode fetched instructions to determine the operation and the operand.
+The system shall execute arithmetic operations (ADD, SUBTRACT, MULTIPLY, DIVIDE) using the accumulator.
+The system shall execute control operations (LOAD, STORE, READ, WRITE, HALT).
+The system shall increment the program counter after each instruction execution.
+The system shall handle input from the user for READ instructions.
+The system shall display output to the user for WRITE instructions.
+The system shall detect and handle overflow conditions during arithmetic operations.
+The system shall allow the user to start and stop program execution.
+The system shall provide error messages for invalid instructions.
+The system shall allow the user to view the contents of memory and the accumulator.
+
+Non-Functional Requirements
+The system shall provide a user-friendly graphical interface.
+The system shall execute commands within 2 seconds.
+The system shall manage memory overflow conditions without crashing.
+

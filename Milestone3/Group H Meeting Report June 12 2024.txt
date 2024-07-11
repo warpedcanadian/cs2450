@@ -1,0 +1,25 @@
+June 12, 2024
+
+Who attended:
+Carson Strachan
+Spencer Nelson
+Hyomin Cha
+
+Agenda:
+- Go over TODO
+-Review requirements for milestone 3
+-Design GUI
+-Start SRS Design Doc
+
+GUI Requirements:
+- Text box for input
+- Area for output
+- Submit button
+- Upload text file button/ means to get file
+
+Assignments:
+- Everyone work on their SRS Doc first draft
+- Carson will handle to TODO's
+- Spencer will create Base Class and everyone will adjust their functions to class based
+- Hyomin will head getting the GUI wireframe diagram made
+- Carson will create the Class Definition Document and everyone will add their class info to it
