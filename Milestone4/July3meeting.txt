@@ -1,0 +1,19 @@
+07/03
+attendance:
+cooper fullmer
+hyomin cha
+spencer nelsom
+
+Agenda:
+Needed changes
+-refactoring
+-button errors
+-file edit functionality
+-gui refactoring
+
+Discussed updating branches more regularly so we are on the same page
+
+Assignments:
+- refactoring main code - cooper
+- save functionality - hyomin
+- save functionality and opperation classes - hyomin
