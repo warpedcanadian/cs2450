@@ -1,0 +1,58 @@
+# Group Project Milestone 4
+
+## Meeting Reports
+
+### June 26, 2024
+
+**Who Attended:**
+- Spencer Nelson
+- Carson Strachan
+- Hyomin Cha (Scrum Master)
+
+**Agenda Items Discussed:**
+- Review Milestone 3 feedback
+- Define truncate: Cut off reading at 4th digit, regardless of how long the instruction is
+- Adjust code base to combine like classes
+
+**Assignments:**
+- Carson: will create TODO document
+- Spencer: will create the class definition doc
+- Everyone: will start making changes to the GUI and compare notes for next week
+
+### July 3, 2024
+
+**Who Attended:**
+- Cooper Fullmer
+- Hyomin Cha (Scrum Master)
+- Spencer Nelson
+
+**Agenda Items Discussed:**
+- Needed changes:
+  - Refactoring
+  - Button errors
+  - File edit functionality
+  - GUI refactoring
+- Discussed updating branches more regularly to be on the same page
+
+**Assignments:**
+- Cooper: refactoring main code
+- Hyomin: save functionality
+- Hyomin: save functionality and operation classes
+
+### July 10, 2024
+
+**Who Attended:**
+- Hyomin Cha (Scrum Master)
+- Carson Strachan
+- Cooper Fullmer
+- Spencer Nelson
+
+**Agenda Items Discussed:**
+- Spencer created UML document, needs to be moved over to the Milestone 4 folder.
+
+**Assignments:**
+Carson: checklist for Milestone 3 todos
+Hyomin: course design for modifications
+Carson: make a view/edit file function (design document)
+Cooper: make a save file function (design document)
+Spencer: following up on his portion of the design document
