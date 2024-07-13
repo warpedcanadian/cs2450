@@ -1,8 +1,9 @@
 import tkinter as tk
-from tkinter import filedialog, colorchooser
+from tkinter import filedialog, messagebox, colorchooser
 from tkinter import ttk
 from start import UVSim, load_program_from_file
 import json
+
 
 def load_config():
     try:
@@ -16,9 +17,11 @@ def load_config():
         save_config(config)
     return config
 
+
 def save_config(config):
     with open('config.json', 'w') as config_file:
         json.dump(config, config_file, indent=4)
+
 
 class UVSimGUI:
     def __init__(self, root):
@@ -106,12 +109,6 @@ class UVSimGUI:
         self.output_text = tk.Text(self.output_frame, wrap=tk.NONE, height=5)
         self.output_text.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=10)
 
-        self.input_var = tk.StringVar()
-        self.input_entry = tk.Entry(self.status_frame, textvariable=self.input_var)
-        self.input_entry.pack(side=tk.TOP, fill=tk.X)
-        self.input_entry.bind("<Return>", self.submit_input)
-        self.input_entry.pack_forget()
-
     def apply_color_scheme(self):
         style = ttk.Style()
         style.configure("Treeview",
@@ -157,7 +154,7 @@ class UVSimGUI:
         if filename:
             self.program = load_program_from_file(filename)
             if not self.program:
-                self.display_message("Error: No valid instructions found in the file.")
+                self.set_status("Error: No valid instructions found in the file.")
                 return
             self.uvsim.load_program(self.program)
             self.display_program(self.program)
@@ -187,11 +184,10 @@ class UVSimGUI:
         self.set_status("Stopped")
 
     def show_about(self):
-        self.display_message("About: UVSim - UVU Simulator")
+        messagebox.showinfo("About", "UVSim - UVU Simulator")
 
     def display_message(self, message):
         self.output_text.insert(tk.END, f"{message}\n")
-        self.output_text.see(tk.END)
 
     def set_status(self, message):
         self.status_label.config(text=f"Status: {message}")
@@ -202,24 +198,12 @@ class UVSimGUI:
         self.pc_label.config(text=f"Program Counter: [{self.uvsim.pc:04}]")
         self.display_memory()
 
-    def request_input(self, prompt, callback):
-        self.set_status(prompt)
-        self.input_callback = callback
-        self.input_entry.pack(side=tk.TOP, fill=tk.X)
-        self.input_entry.focus()
-
-    def submit_input(self, event=None):
-        value = self.input_var.get()
-        self.input_var.set('')
-        self.input_entry.pack_forget()
-        self.set_status("Processing input...")
-        if self.input_callback:
-            self.input_callback(value)
 
 def main():
     root = tk.Tk()
     app = UVSimGUI(root)
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()
