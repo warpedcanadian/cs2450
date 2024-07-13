@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 
+
 class UVSim:
     def __init__(self):
         self.memory = [0] * 100
@@ -22,11 +23,15 @@ class UVSim:
         self.running = True
 
     def fetch(self):
+        if not self.running:
+            return None
         instruction = self.memory[self.pc]
         self.pc += 1
         return instruction
 
     def decode_execute(self, instruction):
+        if not self.running:
+            return
         opcode = instruction // 100
         operand = instruction % 100
         operation_classes = {
@@ -54,9 +59,14 @@ class UVSim:
         while self.running:
             if not self.waiting_for_input:
                 instruction = self.fetch()
-                self.decode_execute(instruction)
-                if self.gui:
-                    self.gui.update_status()
+                if instruction is not None:
+                    self.decode_execute(instruction)
+                    if self.gui:
+                        self.gui.update_status()
+
+    def set_status(self, message):
+        if self.gui:
+            self.gui.set_status(message)
 
     @staticmethod
     def is_valid_instruction(instruction):
@@ -78,10 +88,11 @@ class UVSim:
         max_val = 9999
         min_val = -9999
         if value > max_val:
-            return value % (max_val + 1)
+            return value % 10000
         elif value < min_val:
-            return -(abs(value) % (max_val + 1))
+            return -((-value) % 10000)
         return value
+
 
 class Operation:
     def __init__(self, sim, operand):
@@ -90,6 +101,7 @@ class Operation:
 
     def execute(self):
         raise NotImplementedError("This method should be overridden by subclasses")
+
 
 class Read(Operation):
     def execute(self):
@@ -106,7 +118,7 @@ class Read(Operation):
                     input_var.set(value)
                     input_dialog.destroy()
                 except ValueError:
-                    messagebox.showerror("Invalid input", "Please enter a valid integer.")
+                    self.sim.set_status("Invalid input. Please enter a valid integer.")
 
             entry = tk.Entry(input_dialog)
             entry.pack()
@@ -114,76 +126,91 @@ class Read(Operation):
             tk.Button(input_dialog, text="Submit", command=on_submit).pack()
             input_dialog.transient(self.sim.gui.root)
             input_dialog.grab_set()
-            input_dialog.geometry(f"+{self.sim.gui.root.winfo_rootx() + self.sim.gui.root.winfo_width() // 2 - input_dialog.winfo_reqwidth() // 2}+{self.sim.gui.root.winfo_rooty() + self.sim.gui.root.winfo_height() // 2 - input_dialog.winfo_reqheight() // 2}")
+            input_dialog.geometry(
+                f"+{self.sim.gui.root.winfo_rootx() + self.sim.gui.root.winfo_width() // 2 - input_dialog.winfo_reqwidth() // 2}"
+                f"+{self.sim.gui.root.winfo_rooty() + self.sim.gui.root.winfo_height() // 2 - input_dialog.winfo_reqheight() // 2}")
             self.sim.gui.root.wait_window(input_dialog)
 
-            value = input_var.get()
-            self.sim.memory[self.operand] = value
+            if self.sim.running:
+                value = input_var.get()
+                self.sim.memory[self.operand] = value
             self.sim.waiting_for_input = False
         else:
             value = int(input(f"Enter an integer for memory location {self.operand}: "))
             self.sim.memory[self.operand] = value
 
+
 class Write(Operation):
     def execute(self):
-        print(self.sim.memory[self.operand])
-        if self.sim.gui:
-            self.sim.gui.display_message(f"Value at memory location {self.operand}: {self.sim.memory[self.operand]}")
+        message = f"Value at memory location {self.operand}: {self.sim.memory[self.operand]}"
+        print(message)
+        self.sim.set_status(message)
+
 
 class Load(Operation):
     def execute(self):
         self.sim.accumulator = self.sim.memory[self.operand]
 
+
 class Store(Operation):
     def execute(self):
         self.sim.memory[self.operand] = self.sim.accumulator
+
 
 class Add(Operation):
     def execute(self):
         self.sim.accumulator += self.sim.memory[self.operand]
         self.sim.accumulator = self.sim.check_overflow(self.sim.accumulator)
 
+
 class Subtract(Operation):
     def execute(self):
         self.sim.accumulator -= self.sim.memory[self.operand]
         self.sim.accumulator = self.sim.check_overflow(self.sim.accumulator)
+
 
 class Multiply(Operation):
     def execute(self):
         self.sim.accumulator *= self.sim.memory[self.operand]
         self.sim.accumulator = self.sim.check_overflow(self.sim.accumulator)
 
+
 class Divide(Operation):
     def execute(self):
         if self.sim.memory[self.operand] == 0:
-            print("Error: Division by zero")
-            if self.sim.gui:
-                self.sim.gui.display_message("Error: Division by zero")
+            message = "Error: Division by zero"
+            print(message)
+            self.sim.set_status(message)
             self.sim.running = False
         else:
             self.sim.accumulator //= self.sim.memory[self.operand]
             self.sim.accumulator = self.sim.check_overflow(self.sim.accumulator)
 
+
 class Branch(Operation):
     def execute(self):
         self.sim.pc = self.operand
+
 
 class BranchNeg(Operation):
     def execute(self):
         if self.sim.accumulator < 0:
             self.sim.pc = self.operand
 
+
 class BranchZero(Operation):
     def execute(self):
         if self.sim.accumulator == 0:
             self.sim.pc = self.operand
 
+
 class Halt(Operation):
     def execute(self):
-        print("Halting execution")
-        if self.sim.gui:
-            self.sim.gui.display_message("Halting execution")
+        message = "Halting execution"
+        print(message)
+        self.sim.set_status(message)
         self.sim.running = False
+
 
 def load_program_from_file(filename):
     program = []
@@ -196,6 +223,7 @@ def load_program_from_file(filename):
                 else:
                     print(f"Invalid instruction '{line}' ignored.")
     return program
+
 
 if __name__ == "__main__":
     import gui
