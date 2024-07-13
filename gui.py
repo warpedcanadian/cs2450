@@ -1,8 +1,9 @@
 import tkinter as tk
-from tkinter import filedialog, messagebox, simpledialog, colorchooser
+from tkinter import filedialog, messagebox, colorchooser
 from tkinter import ttk
 from start import UVSim, load_program_from_file
 import json
+
 
 def load_config():
     try:
@@ -16,9 +17,11 @@ def load_config():
         save_config(config)
     return config
 
+
 def save_config(config):
     with open('config.json', 'w') as config_file:
         json.dump(config, config_file, indent=4)
+
 
 class UVSimGUI:
     def __init__(self, root):
@@ -151,13 +154,12 @@ class UVSimGUI:
         if filename:
             self.program = load_program_from_file(filename)
             if not self.program:
-                messagebox.showerror("Error", "No valid instructions found in the file.")
+                self.set_status("Error: No valid instructions found in the file.")
                 return
             self.uvsim.load_program(self.program)
             self.display_program(self.program)
             self.display_memory()
-            self.status_label.config(text="Status: Program Loaded")
-            self.status_bar.config(text="Status: Program Loaded")
+            self.set_status("Program Loaded")
 
     def display_program(self, program):
         self.program_text.delete(1.0, tk.END)
@@ -175,19 +177,21 @@ class UVSimGUI:
         if not self.uvsim.running:
             self.uvsim.load_program(self.program)
         self.uvsim.run()
-        self.status_label.config(text="Status: Running")
-        self.status_bar.config(text="Status: Running")
+        self.set_status("Running")
 
     def stop_program(self):
         self.uvsim.running = False
-        self.status_label.config(text="Status: Stopped")
-        self.status_bar.config(text="Status: Stopped")
+        self.set_status("Stopped")
 
     def show_about(self):
         messagebox.showinfo("About", "UVSim - UVU Simulator")
 
     def display_message(self, message):
         self.output_text.insert(tk.END, f"{message}\n")
+
+    def set_status(self, message):
+        self.status_label.config(text=f"Status: {message}")
+        self.status_bar.config(text=f"Status: {message}")
 
     def update_status(self):
         self.accumulator_label.config(text=f"Accumulator: [{self.uvsim.accumulator:04}]")
@@ -203,6 +207,7 @@ def main():
     root = tk.Tk()
     app = UVSimGUI(root)
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()
