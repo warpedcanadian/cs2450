@@ -1,9 +1,8 @@
 import tkinter as tk
-from tkinter import filedialog, messagebox, colorchooser
+from tkinter import filedialog, messagebox, simpledialog, colorchooser
 from tkinter import ttk
 from start import UVSim, load_program_from_file
 import json
-
 
 def load_config():
     try:
@@ -17,11 +16,9 @@ def load_config():
         save_config(config)
     return config
 
-
 def save_config(config):
     with open('config.json', 'w') as config_file:
         json.dump(config, config_file, indent=4)
-
 
 class UVSimGUI:
     def __init__(self, root):
@@ -44,11 +41,14 @@ class UVSimGUI:
         self.file_menu = tk.Menu(self.menu, tearoff=0)
         self.menu.add_cascade(label="File", menu=self.file_menu)
         self.file_menu.add_command(label="Open", command=self.load_file)
+        self.file_menu.add_command(label="Save", command=self.save_file)
         self.file_menu.add_separator()
         self.file_menu.add_command(label="Exit", command=self.root.quit)
 
         self.edit_menu = tk.Menu(self.menu, tearoff=0)
         self.menu.add_cascade(label="Edit", menu=self.edit_menu)
+        self.edit_menu.add_command(label="Add Instruction", command=self.add_instruction)
+        self.edit_menu.add_command(label="Delete Instruction", command=self.delete_instruction)
         self.edit_menu.add_command(label="Change Color Scheme", command=self.change_color_scheme)
 
         self.help_menu = tk.Menu(self.menu, tearoff=0)
@@ -154,12 +154,35 @@ class UVSimGUI:
         if filename:
             self.program = load_program_from_file(filename)
             if not self.program:
-                self.set_status("Error: No valid instructions found in the file.")
+                messagebox.showerror("Error", "No valid instructions found in the file.")
                 return
             self.uvsim.load_program(self.program)
             self.display_program(self.program)
             self.display_memory()
-            self.set_status("Program Loaded")
+            self.status_label.config(text="Status: Program Loaded")
+            self.status_bar.config(text="Status: Program Loaded")
+
+    def save_file(self):
+        filename = filedialog.asksaveasfilename(title="Save File", filetypes=(("Text Files", "*.txt"), ("All Files", "*.*")))
+        if filename:
+            with open(filename, 'w') as file:
+                file.writelines(self.program_text.get(1.0, tk.END).strip().split("\n"))
+            messagebox.showinfo("Success", f"File saved as {filename}")
+
+    def add_instruction(self):
+        new_instruction = simpledialog.askstring("Input", "Enter new instruction:")
+        if new_instruction and UVSim.is_valid_instruction(new_instruction):
+            self.program_text.insert(tk.END, f"{new_instruction}\n")
+            self.program = [int(line) for line in self.program_text.get(1.0, tk.END).strip().split("\n")]
+
+    def delete_instruction(self):
+        try:
+            start_index = self.program_text.index(tk.SEL_FIRST)
+            end_index = self.program_text.index(tk.SEL_LAST)
+            self.program_text.delete(start_index, end_index)
+            self.program = [int(line) for line in self.program_text.get(1.0, tk.END).strip().split("\n")]
+        except tk.TclError:
+            messagebox.showerror("Error", "Please select the instruction to delete.")
 
     def display_program(self, program):
         self.program_text.delete(1.0, tk.END)
@@ -177,11 +200,13 @@ class UVSimGUI:
         if not self.uvsim.running:
             self.uvsim.load_program(self.program)
         self.uvsim.run()
-        self.set_status("Running")
+        self.status_label.config(text="Status: Running")
+        self.status_bar.config(text="Status: Running")
 
     def stop_program(self):
         self.uvsim.running = False
-        self.set_status("Stopped")
+        self.status_label.config(text="Status: Stopped")
+        self.status_bar.config(text="Status: Stopped")
 
     def show_about(self):
         messagebox.showinfo("About", "UVSim - UVU Simulator")
@@ -189,26 +214,15 @@ class UVSimGUI:
     def display_message(self, message):
         self.output_text.insert(tk.END, f"{message}\n")
 
-    def set_status(self, message):
-        self.status_label.config(text=f"Status: {message}")
-        self.status_bar.config(text=f"Status: {message}")
-
     def update_status(self):
         self.accumulator_label.config(text=f"Accumulator: [{self.uvsim.accumulator:04}]")
         self.pc_label.config(text=f"Program Counter: [{self.uvsim.pc:04}]")
         self.display_memory()
 
-    def save_file(self, content, filename="file.txt"):
-        with open(filename, "w") as file:
-            file.write(content)
-        print(f"File '{filename}' saved successfully.")
-
-
 def main():
     root = tk.Tk()
     app = UVSimGUI(root)
     root.mainloop()
-
 
 if __name__ == "__main__":
     main()
