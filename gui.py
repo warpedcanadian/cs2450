@@ -194,6 +194,11 @@ class UVSimGUI:
         self.pc_label.config(text=f"Program Counter: [{self.uvsim.pc:04}]")
         self.display_memory()
 
+    def save_file(self, content, filename="file.txt"):
+        with open(filename, "w") as file:
+            file.write(content)
+        print(f"File '{filename}' saved successfully.")
+
 def main():
     root = tk.Tk()
     app = UVSimGUI(root)
