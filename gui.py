@@ -203,6 +203,7 @@ class UVSimGUI:
             file.write(content)
         print(f"File '{filename}' saved successfully.")
 
+
 def main():
     root = tk.Tk()
     app = UVSimGUI(root)
