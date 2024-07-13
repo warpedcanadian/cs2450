@@ -1,5 +1,4 @@
 import tkinter as tk
-from tkinter import messagebox
 
 
 class UVSim:
@@ -68,6 +67,14 @@ class UVSim:
         if self.gui:
             self.gui.set_status(message)
 
+    def display_output(self, message):
+        if self.gui:
+            self.gui.display_message(message)
+
+    def request_input(self, prompt, callback):
+        if self.gui:
+            self.gui.request_input(prompt, callback)
+
     @staticmethod
     def is_valid_instruction(instruction):
         if (instruction.startswith('+') or instruction.startswith('-')) and len(instruction) == 5:
@@ -105,46 +112,24 @@ class Operation:
 
 class Read(Operation):
     def execute(self):
-        if self.sim.gui:
-            self.sim.waiting_for_input = True
-            input_dialog = tk.Toplevel(self.sim.gui.root)
-            input_dialog.title("Input")
-            tk.Label(input_dialog, text=f"Enter an integer for memory location {self.operand}:").pack()
-            input_var = tk.IntVar()
+        self.sim.waiting_for_input = True
+        self.sim.request_input(f"Enter an integer for memory location {self.operand}:", self.handle_input)
 
-            def on_submit(event=None):
-                try:
-                    value = int(entry.get())
-                    input_var.set(value)
-                    input_dialog.destroy()
-                except ValueError:
-                    self.sim.set_status("Invalid input. Please enter a valid integer.")
-
-            entry = tk.Entry(input_dialog)
-            entry.pack()
-            entry.bind("<Return>", on_submit)
-            tk.Button(input_dialog, text="Submit", command=on_submit).pack()
-            input_dialog.transient(self.sim.gui.root)
-            input_dialog.grab_set()
-            input_dialog.geometry(
-                f"+{self.sim.gui.root.winfo_rootx() + self.sim.gui.root.winfo_width() // 2 - input_dialog.winfo_reqwidth() // 2}"
-                f"+{self.sim.gui.root.winfo_rooty() + self.sim.gui.root.winfo_height() // 2 - input_dialog.winfo_reqheight() // 2}")
-            self.sim.gui.root.wait_window(input_dialog)
-
-            if self.sim.running:
-                value = input_var.get()
-                self.sim.memory[self.operand] = value
-            self.sim.waiting_for_input = False
-        else:
-            value = int(input(f"Enter an integer for memory location {self.operand}: "))
+    def handle_input(self, value):
+        try:
+            value = int(value)
             self.sim.memory[self.operand] = value
+            self.sim.waiting_for_input = False
+        except ValueError:
+            self.sim.set_status("Invalid input. Please enter a valid integer.")
+            self.sim.waiting_for_input = True
+            self.sim.request_input(f"Enter an integer for memory location {self.operand}:", self.handle_input)
 
 
 class Write(Operation):
     def execute(self):
         message = f"Value at memory location {self.operand}: {self.sim.memory[self.operand]}"
-        print(message)
-        self.sim.set_status(message)
+        self.sim.display_output(message)
 
 
 class Load(Operation):
@@ -179,7 +164,6 @@ class Divide(Operation):
     def execute(self):
         if self.sim.memory[self.operand] == 0:
             message = "Error: Division by zero"
-            print(message)
             self.sim.set_status(message)
             self.sim.running = False
         else:
@@ -207,7 +191,6 @@ class BranchZero(Operation):
 class Halt(Operation):
     def execute(self):
         message = "Halting execution"
-        print(message)
         self.sim.set_status(message)
         self.sim.running = False
 
