@@ -42,11 +42,14 @@ class UVSimGUI:
         self.file_menu = tk.Menu(self.menu, tearoff=0)
         self.menu.add_cascade(label="File", menu=self.file_menu)
         self.file_menu.add_command(label="Open", command=self.load_file)
+        self.file_menu.add_command(label="Save", command=self.save_file)
         self.file_menu.add_separator()
         self.file_menu.add_command(label="Exit", command=self.root.quit)
 
         self.edit_menu = tk.Menu(self.menu, tearoff=0)
         self.menu.add_cascade(label="Edit", menu=self.edit_menu)
+        self.edit_menu.add_command(label="Add Instruction", command=self.add_instruction)
+        self.edit_menu.add_command(label="Delete Instruction", command=self.delete_instruction)
         self.edit_menu.add_command(label="Change Color Scheme", command=self.change_color_scheme)
 
         self.help_menu = tk.Menu(self.menu, tearoff=0)
@@ -164,6 +167,28 @@ class UVSimGUI:
             self.status_label.config(text="Status: Program Loaded")
             self.status_bar.config(text="Status: Program Loaded")
 
+    def save_file(self):
+        filename = filedialog.asksaveasfilename(title="Save File", filetypes=(("Text Files", "*.txt"), ("All Files", "*.*")))
+        if filename:
+            with open(filename, 'w') as file:
+                file.writelines(self.program_text.get(1.0, tk.END).strip().split("\n"))
+            messagebox.showinfo("Success", f"File saved as {filename}")
+
+    def add_instruction(self):
+        new_instruction = simpledialog.askstring("Input", "Enter new instruction:")
+        if new_instruction and UVSim.is_valid_instruction(new_instruction):
+            self.program_text.insert(tk.END, f"{new_instruction}\n")
+            self.program = [int(line) for line in self.program_text.get(1.0, tk.END).strip().split("\n")]
+
+    def delete_instruction(self):
+        try:
+            start_index = self.program_text.index(tk.SEL_FIRST)
+            end_index = self.program_text.index(tk.SEL_LAST)
+            self.program_text.delete(start_index, end_index)
+            self.program = [int(line) for line in self.program_text.get(1.0, tk.END).strip().split("\n")]
+        except tk.TclError:
+            messagebox.showerror("Error", "Please select the instruction to delete.")
+
     def display_program(self, program):
         self.program_text.delete(1.0, tk.END)
         for instruction in program:
@@ -199,6 +224,7 @@ class UVSimGUI:
         self.pc_label.config(text=f"Program Counter: [{self.uvsim.pc:04}]")
         self.display_memory()
 
+
     def save_file(self):
         file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
         if file_path:
@@ -210,6 +236,7 @@ class UVSimGUI:
             except Exception as e:
                 self.status_bar.config(text=f"Error saving file: {str(e)}")
         self.load_file()
+
 def main():
     root = tk.Tk()
     app = UVSimGUI(root)
