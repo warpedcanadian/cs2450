@@ -3,6 +3,7 @@ from tkinter import filedialog, messagebox, simpledialog, colorchooser
 from tkinter import ttk
 from start import UVSim, load_program_from_file
 import json
+from tkinter.filedialog import asksaveasfile
 
 def load_config():
     try:
@@ -64,6 +65,9 @@ class UVSimGUI:
         self.stop_button = tk.Button(self.toolbar, text="Stop", command=self.stop_program)
         self.stop_button.pack(side=tk.LEFT, padx=2, pady=2)
 
+        self.save_button = tk.Button(self.toolbar, text="Save", command=self.save_file)
+        self.save_button.pack(side=tk.LEFT, padx=2, pady=2)
+
         self.main_panel = tk.Frame(self.root)
         self.main_panel.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=10, pady=10)
 
@@ -120,6 +124,7 @@ class UVSimGUI:
         self.toolbar.configure(bg=self.primary_color)
         self.run_button.configure(bg=self.primary_color, fg=self.off_color)
         self.stop_button.configure(bg=self.primary_color, fg=self.off_color)
+        self.save_button.configure(bg=self.primary_color, fg=self.off_color)
         self.status_bar.configure(bg=self.primary_color, fg=self.off_color)
 
         self.program_frame.configure(bg=self.primary_color)
@@ -218,6 +223,19 @@ class UVSimGUI:
         self.accumulator_label.config(text=f"Accumulator: [{self.uvsim.accumulator:04}]")
         self.pc_label.config(text=f"Program Counter: [{self.uvsim.pc:04}]")
         self.display_memory()
+
+
+    def save_file(self):
+        file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
+        if file_path:
+            try:
+                with open(file_path, 'w') as file:
+                    text_content = self.program_text.get("1.0", "end-1c")
+                    file.write(text_content)
+                self.status_bar.config(text=f"File saved: {file_path}")
+            except Exception as e:
+                self.status_bar.config(text=f"Error saving file: {str(e)}")
+        self.load_file()
 
 def main():
     root = tk.Tk()
