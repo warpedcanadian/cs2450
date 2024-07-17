@@ -1,0 +1,44 @@
+# Group Project Milestone 5
+
+## Meeting Reports
+
+### July 17, 2024
+
+**Who Attended:**
+- Carson Strachan (Scrum Master)
+
+**Agenda Items Discussed:**
+-TODOs:
+  - Update README.
+    - Needs instructions on how each GUI control is applied and used.
+    - How does the instruction work, what formats are acceptable, how does delete instruction work, what does 'Stop' do
+    and when can I use it?
+    - Include the 'Save' menu item.
+    - Revise Use Cases
+    - Revise Requirements
+  - Decide to update functionality of the 'Stop' button or get rid of entirely.
+  - Manual parts are not persisted into memory execution.
+  - Update all documentation.
+- Milestone 5:
+  - Expand the scope of your application so data files can contain more lines.
+  - Decide on how to support "old" files.
+  - GUI supports multiple files opened.
+
+**Assignments:**
+- Carson:
+- Spencer:
+- Hyomin:
+- Cooper:
+- Everyone:
+
+
+### July 24, 2024
+
+**Who Attended:**
+- Carson Strachan (Scrum Master)
+
+**Agenda Items Discussed:**
+-
+
+**Assignments:**
+-
