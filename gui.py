@@ -63,8 +63,8 @@ class UVSimGUI:
         self.run_button = tk.Button(self.toolbar, text="Run", command=self.run_program)
         self.run_button.pack(side=tk.LEFT, padx=2, pady=2)
 
-        self.stop_button = tk.Button(self.toolbar, text="Stop", command=self.stop_program)
-        self.stop_button.pack(side=tk.LEFT, padx=2, pady=2)
+        #self.stop_button = tk.Button(self.toolbar, text="Stop", command=self.stop_program)
+        #self.stop_button.pack(side=tk.LEFT, padx=2, pady=2)
 
         self.save_button = tk.Button(self.toolbar, text="Save", command=self.save_file)
         self.save_button.pack(side=tk.LEFT, padx=2, pady=2)
@@ -212,10 +212,10 @@ class UVSimGUI:
         self.status_label.config(text="Status: Running")
         self.status_bar.config(text="Status: Running")
 
-    def stop_program(self):
-        self.uvsim.running = False
-        self.status_label.config(text="Status: Stopped")
-        self.status_bar.config(text="Status: Stopped")
+    #def stop_program(self):
+        #self.uvsim.running = False
+        #self.status_label.config(text="Status: Stopped")
+        #self.status_bar.config(text="Status: Stopped")
 
     def show_about(self):
         messagebox.showinfo("About", "UVSim - UVU Simulator")
