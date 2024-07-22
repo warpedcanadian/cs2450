@@ -32,6 +32,7 @@ class UVSimGUI:
         self.create_widgets()
         self.apply_color_scheme()
         self.program = []
+        self.program_copy = []
 
     def create_widgets(self):
         self.root.title("UVSim")
@@ -41,7 +42,7 @@ class UVSimGUI:
 
         self.file_menu = tk.Menu(self.menu, tearoff=0)
         self.menu.add_cascade(label="File", menu=self.file_menu)
-        self.file_menu.add_command(label="Open", command=self.load_file)
+        self.file_menu.add_command(label="Open", command=self.select_file)
         self.file_menu.add_command(label="Save", command=self.save_file)
         self.file_menu.add_separator()
         self.file_menu.add_command(label="Exit", command=self.root.quit)
@@ -154,14 +155,14 @@ class UVSimGUI:
             save_config(self.config)
             self.apply_color_scheme()
 
-    def load_file(self):
+    def select_file(self):
         filename = filedialog.askopenfilename(title="Open File", filetypes=(("Text Files", "*.txt"), ("All Files", "*.*")))
         if filename:
             self.program = load_program_from_file(filename)
             if not self.program:
                 messagebox.showerror("Error", "No valid instructions found in the file.")
                 return
-            self.uvsim.load_program(self.program)
+            self.uvsim.load_program(self.program)    
             self.display_program(self.program)
             self.display_memory()
             self.status_label.config(text="Status: Program Loaded")
@@ -193,6 +194,8 @@ class UVSimGUI:
         self.program_text.delete(1.0, tk.END)
         for instruction in program:
             self.program_text.insert(tk.END, f"{instruction:04}\n")
+            self.program_copy.append(instruction)
+
 
     def display_memory(self):
         for i in self.memory_tree.get_children():
@@ -204,6 +207,7 @@ class UVSimGUI:
         self.output_text.delete(1.0, tk.END)
         if not self.uvsim.running:
             self.uvsim.load_program(self.program)
+        self.retrieve_input()
         self.uvsim.run()
         self.status_label.config(text="Status: Running")
         self.status_bar.config(text="Status: Running")
@@ -224,7 +228,7 @@ class UVSimGUI:
         self.pc_label.config(text=f"Program Counter: [{self.uvsim.pc:04}]")
         self.display_memory()
 
-
+    '''
     def save_file(self):
         file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
         if file_path:
@@ -236,7 +240,11 @@ class UVSimGUI:
             except Exception as e:
                 self.status_bar.config(text=f"Error saving file: {str(e)}")
         self.load_file()
-
+    '''
+    def retrieve_input(self):
+        raw_input = self.program_text.get('1.0', 'end-2c')
+        input_as_ints = [int(item) for item in raw_input.split('\n')]
+        self.uvsim.load_program(input_as_ints)
 def main():
     root = tk.Tk()
     app = UVSimGUI(root)
