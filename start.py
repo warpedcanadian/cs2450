@@ -3,7 +3,7 @@ from tkinter import messagebox
 
 class UVSim:
     def __init__(self):
-        self.memory = [0] * 100
+        self.memory = [0] * 250  # Change memory size to 250
         self.accumulator = 0
         self.pc = 0
         self.running = True
@@ -14,21 +14,30 @@ class UVSim:
         self.gui = gui
 
     def load_program(self, program):
-        self.memory = [0] * 100
+        self.memory = [0] * 250  # Change memory size to 250
         for i, instruction in enumerate(program):
-            self.memory[i] = instruction
+            if i < len(self.memory):
+                self.memory[i] = instruction
         self.accumulator = 0
         self.pc = 0
         self.running = True
 
     def fetch(self):
-        instruction = self.memory[self.pc]
-        self.pc += 1
-        return instruction
+        if not self.running:
+            return 0  # Return a noop if not running to avoid out of bounds
+        if self.pc < len(self.memory):
+            instruction = self.memory[self.pc]
+            print(f"Fetching instruction at PC={self.pc}: {instruction}")
+            self.pc += 1
+            return instruction
+        else:
+            self.running = False
+            raise IndexError("Program Counter exceeded memory bounds.")
 
     def decode_execute(self, instruction):
-        opcode = instruction // 100
-        operand = instruction % 100
+        opcode = instruction // 1000  # Extracting the first two digits as opcode
+        operand = instruction % 1000  # Extracting the last three digits as operand
+        print(f"Decoding instruction: opcode={opcode}, operand={operand}")
         operation_classes = {
             10: Read,
             11: Write,
@@ -47,16 +56,27 @@ class UVSim:
         if opcode in operation_classes:
             operation = operation_classes[opcode](self, operand)
             operation.execute()
+        else:
+            self.running = False  # Stop the simulation if the instruction is invalid
         if self.gui:
             self.gui.display_memory()
 
     def run(self):
         while self.running:
             if not self.waiting_for_input:
-                instruction = self.fetch()
-                self.decode_execute(instruction)
-                if self.gui:
-                    self.gui.update_status()
+                try:
+                    instruction = self.fetch()
+                    self.decode_execute(instruction)
+                    if not self.running:
+                        break
+                except IndexError as e:
+                    self.running = False
+                    if self.gui:
+                        self.gui.display_message(str(e))
+                    break
+            if self.gui:
+                self.gui.update_status()
+        print(f"Program halted. Final PC={self.pc}, Accumulator={self.accumulator}")
 
     @staticmethod
     def is_valid_instruction(instruction):
@@ -66,7 +86,7 @@ class UVSim:
                 return True
             except ValueError:
                 return False
-        elif len(instruction) == 4:
+        elif len(instruction) == 6:  # For instructions without a sign
             try:
                 int(instruction)
                 return True
@@ -75,8 +95,8 @@ class UVSim:
         return False
 
     def check_overflow(self, value):
-        max_val = 9999
-        min_val = -9999
+        max_val = 999999
+        min_val = -999999
         if value > max_val:
             return value % (max_val + 1)
         elif value < min_val:
@@ -190,11 +210,16 @@ def load_program_from_file(filename):
     with open(filename, 'r') as file:
         for line in file:
             line = line.strip()
+            print(f"Reading line: {line}")  # Debugging statement
             if line:
                 if UVSim.is_valid_instruction(line):
+                    # Ensure instruction is converted to a six-digit format
+                    if len(line) == 5:
+                        line = f"{line[0]}0{line[1:]}"
                     program.append(int(line))
                 else:
                     print(f"Invalid instruction '{line}' ignored.")
+    print(f"Loaded program: {program}")  # Debugging statement
     return program
 
 if __name__ == "__main__":

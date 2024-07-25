@@ -3,8 +3,6 @@ from tkinter import filedialog, messagebox, simpledialog, colorchooser
 from tkinter import ttk
 from start import UVSim, load_program_from_file
 import json
-from tkinter.filedialog import asksaveasfile
-
 
 def load_config():
     try:
@@ -18,11 +16,9 @@ def load_config():
         save_config(config)
     return config
 
-
 def save_config(config):
     with open('config.json', 'w') as config_file:
         json.dump(config, config_file, indent=4)
-
 
 class UVSimGUI:
     def __init__(self, root):
@@ -35,7 +31,6 @@ class UVSimGUI:
         self.create_widgets()
         self.apply_color_scheme()
         self.programs = {}
-        # self.root.geometry("1280x600") 
 
     def create_widgets(self):
         self.root.title("UVSim")
@@ -85,10 +80,10 @@ class UVSimGUI:
         self.memory_label = tk.Label(self.memory_frame, text="Memory Display")
         self.memory_label.pack(side=tk.TOP, anchor=tk.W)
 
-        self.memory_tree = ttk.Treeview(self.memory_frame, columns=("Address", "Value"), show="headings", height=10)
+        self.memory_tree = ttk.Treeview(self.memory_frame, columns=("Address", "Value"), show="headings", height=15)
         self.memory_tree.heading("Address", text="Address")
         self.memory_tree.heading("Value", text="Value")
-        self.memory_tree.pack(side=tk.TOP, fill=tk.BOTH, expand=False)
+        self.memory_tree.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
         self.status_frame = tk.Frame(self.memory_frame)
         self.status_frame.pack(side=tk.TOP, fill=tk.X, pady=10)
@@ -198,7 +193,7 @@ class UVSimGUI:
                     if len(line) == 5:  # Already has sign and 4 digits
                         new_line = f"{line[0]}0{line[1:]}"
                     elif len(line) == 4:  # No sign, 4 digits
-                        new_line = f"+0{line}"
+                        new_line = f"+00{line}"
                     else:
                         messagebox.showerror("Error", "File contains invalid instructions.")
                         return
@@ -247,9 +242,13 @@ class UVSimGUI:
         self.output_text.delete(1.0, tk.END)
         if not self.uvsim.running:
             self.uvsim.load_program(self.program)
-        self.uvsim.run()
-        self.status_label.config(text="Status: Running")
-        self.status_bar.config(text="Status: Running")
+        try:
+            self.uvsim.run()
+        except IndexError as e:
+            messagebox.showerror("Error", str(e))
+        self.status_label.config(text="Status: Stopped" if not self.uvsim.running else "Status: Running")
+        self.status_bar.config(text="Status: Stopped" if not self.uvsim.running else "Status: Running")
+        self.update_status()  # Ensure the status labels are updated with final values
 
     def stop_program(self):
         self.uvsim.running = False
@@ -267,12 +266,10 @@ class UVSimGUI:
         self.pc_label.config(text=f"Program Counter: [{self.uvsim.pc:06}]")
         self.display_memory()
 
-
 def main():
     root = tk.Tk()
     app = UVSimGUI(root)
     root.mainloop()
-
 
 if __name__ == "__main__":
     main()
