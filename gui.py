@@ -124,7 +124,6 @@ class UVSimGUI:
         self.root.configure(bg=self.primary_color)
         self.toolbar.configure(bg=self.primary_color)
         self.run_button.configure(bg=self.primary_color, fg=self.off_color)
-        self.stop_button.configure(bg=self.primary_color, fg=self.off_color)
         self.save_button.configure(bg=self.primary_color, fg=self.off_color)
         self.status_bar.configure(bg=self.primary_color, fg=self.off_color)
 
