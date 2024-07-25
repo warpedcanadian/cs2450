@@ -5,6 +5,7 @@ from start import UVSim, load_program_from_file
 import json
 from tkinter.filedialog import asksaveasfile
 
+
 def load_config():
     try:
         with open('config.json', 'r') as config_file:
@@ -17,9 +18,11 @@ def load_config():
         save_config(config)
     return config
 
+
 def save_config(config):
     with open('config.json', 'w') as config_file:
         json.dump(config, config_file, indent=4)
+
 
 class UVSimGUI:
     def __init__(self, root):
@@ -31,8 +34,8 @@ class UVSimGUI:
         self.uvsim.set_gui(self)
         self.create_widgets()
         self.apply_color_scheme()
-        self.program = []
-        self.program_copy = []
+        self.programs = {}
+        # self.root.geometry("1280x600") 
 
     def create_widgets(self):
         self.root.title("UVSim")
@@ -42,8 +45,9 @@ class UVSimGUI:
 
         self.file_menu = tk.Menu(self.menu, tearoff=0)
         self.menu.add_cascade(label="File", menu=self.file_menu)
-        self.file_menu.add_command(label="Open", command=self.select_file)
+        self.file_menu.add_command(label="Open", command=self.load_file)
         self.file_menu.add_command(label="Save", command=self.save_file)
+        self.file_menu.add_command(label="Convert to 6-Digit", command=self.convert_file)
         self.file_menu.add_separator()
         self.file_menu.add_command(label="Exit", command=self.root.quit)
 
@@ -63,8 +67,8 @@ class UVSimGUI:
         self.run_button = tk.Button(self.toolbar, text="Run", command=self.run_program)
         self.run_button.pack(side=tk.LEFT, padx=2, pady=2)
 
-        #self.stop_button = tk.Button(self.toolbar, text="Stop", command=self.stop_program)
-        #self.stop_button.pack(side=tk.LEFT, padx=2, pady=2)
+        self.stop_button = tk.Button(self.toolbar, text="Stop", command=self.stop_program)
+        self.stop_button.pack(side=tk.LEFT, padx=2, pady=2)
 
         self.save_button = tk.Button(self.toolbar, text="Save", command=self.save_file)
         self.save_button.pack(side=tk.LEFT, padx=2, pady=2)
@@ -72,14 +76,8 @@ class UVSimGUI:
         self.main_panel = tk.Frame(self.root)
         self.main_panel.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-        self.program_frame = tk.Frame(self.main_panel)
-        self.program_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 10))
-
-        self.program_label = tk.Label(self.program_frame, text="Program Instructions")
-        self.program_label.pack(side=tk.TOP, anchor=tk.W)
-
-        self.program_text = tk.Text(self.program_frame, wrap=tk.NONE, height=20)
-        self.program_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        self.notebook = ttk.Notebook(self.main_panel)
+        self.notebook.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 10))
 
         self.memory_frame = tk.Frame(self.main_panel)
         self.memory_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
@@ -95,10 +93,10 @@ class UVSimGUI:
         self.status_frame = tk.Frame(self.memory_frame)
         self.status_frame.pack(side=tk.TOP, fill=tk.X, pady=10)
 
-        self.accumulator_label = tk.Label(self.status_frame, text="Accumulator: [0000]")
+        self.accumulator_label = tk.Label(self.status_frame, text="Accumulator: [000000]")
         self.accumulator_label.pack(side=tk.TOP, anchor=tk.W)
 
-        self.pc_label = tk.Label(self.status_frame, text="Program Counter: [0000]")
+        self.pc_label = tk.Label(self.status_frame, text="Program Counter: [000000]")
         self.pc_label.pack(side=tk.TOP, anchor=tk.W)
 
         self.status_label = tk.Label(self.status_frame, text="Status: Ready")
@@ -128,10 +126,6 @@ class UVSimGUI:
         self.save_button.configure(bg=self.primary_color, fg=self.off_color)
         self.status_bar.configure(bg=self.primary_color, fg=self.off_color)
 
-        self.program_frame.configure(bg=self.primary_color)
-        self.program_label.configure(bg=self.primary_color, fg=self.off_color)
-        self.program_text.configure(bg='white', fg='black')
-
         self.memory_frame.configure(bg=self.primary_color)
         self.memory_label.configure(bg=self.primary_color, fg=self.off_color)
         self.memory_tree.configure(style="Treeview")
@@ -155,25 +149,71 @@ class UVSimGUI:
             save_config(self.config)
             self.apply_color_scheme()
 
-    def select_file(self):
-        filename = filedialog.askopenfilename(title="Open File", filetypes=(("Text Files", "*.txt"), ("All Files", "*.*")))
-        if filename:
+    def load_file(self):
+        filenames = filedialog.askopenfilenames(title="Open File",
+                                                filetypes=(("Text Files", "*.txt"), ("All Files", "*.*")))
+        for filename in filenames:
+            with open(filename, 'r') as file:
+                content = file.read()
+            self.add_tab(filename, content)
             self.program = load_program_from_file(filename)
             if not self.program:
                 messagebox.showerror("Error", "No valid instructions found in the file.")
                 return
-            self.uvsim.load_program(self.program)    
+            self.uvsim.load_program(self.program)
             self.display_program(self.program)
             self.display_memory()
             self.status_label.config(text="Status: Program Loaded")
             self.status_bar.config(text="Status: Program Loaded")
+        self.root.geometry("")  # Adjust window size to fit the new content
 
     def save_file(self):
-        filename = filedialog.asksaveasfilename(title="Save File", filetypes=(("Text Files", "*.txt"), ("All Files", "*.*")))
+        current_tab = self.notebook.select()
+        file_path = self.notebook.tab(current_tab, "text")
+        content = self.programs[file_path].get(1.0, tk.END).strip()
+        with open(file_path, 'w') as file:
+            file.write(content)
+
+    def add_tab(self, filename, content):
+        tab = tk.Frame(self.notebook)
+        self.notebook.add(tab, text=filename)
+
+        program_text = tk.Text(tab, wrap=tk.NONE, height=20)
+        program_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        program_text.insert(tk.END, content)
+
+        self.programs[filename] = program_text
+
+    def convert_file(self):
+        filename = filedialog.askopenfilename(title="Open 4-Digit File",
+                                              filetypes=(("Text Files", "*.txt"), ("All Files", "*.*")))
         if filename:
-            with open(filename, 'w') as file:
-                file.writelines(self.program_text.get(1.0, tk.END).strip().split("\n"))
-            messagebox.showinfo("Success", f"File saved as {filename}")
+            with open(filename, 'r') as file:
+                lines = file.readlines()
+
+            new_lines = []
+            for line in lines:
+                line = line.strip()
+                if UVSim.is_valid_instruction(line):
+                    if len(line) == 5:  # Already has sign and 4 digits
+                        new_line = f"{line[0]}0{line[1:]}"
+                    elif len(line) == 4:  # No sign, 4 digits
+                        new_line = f"+0{line}"
+                    else:
+                        messagebox.showerror("Error", "File contains invalid instructions.")
+                        return
+                    new_lines.append(new_line)
+                else:
+                    messagebox.showerror("Error", f"Invalid instruction '{line}' found.")
+                    return
+
+            new_filename = filedialog.asksaveasfilename(title="Save 6-Digit File",
+                                                        filetypes=(("Text Files", "*.txt"), ("All Files", "*.*")))
+            if new_filename:
+                with open(new_filename, 'w') as new_file:
+                    for line in new_lines:
+                        new_file.write(f"{line}\n")
+                messagebox.showinfo("Success", f"File converted and saved as {new_filename}")
 
     def add_instruction(self):
         new_instruction = simpledialog.askstring("Input", "Enter new instruction:")
@@ -191,11 +231,11 @@ class UVSimGUI:
             messagebox.showerror("Error", "Please select the instruction to delete.")
 
     def display_program(self, program):
-        self.program_text.delete(1.0, tk.END)
+        current_tab = self.notebook.select()
+        file_path = self.notebook.tab(current_tab, "text")
+        self.programs[file_path].delete(1.0, tk.END)
         for instruction in program:
-            self.program_text.insert(tk.END, f"{instruction:04}\n")
-            self.program_copy.append(instruction)
-
+            self.programs[file_path].insert(tk.END, f"{instruction:06}\n")
 
     def display_memory(self):
         for i in self.memory_tree.get_children():
@@ -207,15 +247,14 @@ class UVSimGUI:
         self.output_text.delete(1.0, tk.END)
         if not self.uvsim.running:
             self.uvsim.load_program(self.program)
-        self.retrieve_input()
         self.uvsim.run()
         self.status_label.config(text="Status: Running")
         self.status_bar.config(text="Status: Running")
 
-    #def stop_program(self):
-        #self.uvsim.running = False
-        #self.status_label.config(text="Status: Stopped")
-        #self.status_bar.config(text="Status: Stopped")
+    def stop_program(self):
+        self.uvsim.running = False
+        self.status_label.config(text="Status: Stopped")
+        self.status_bar.config(text="Status: Stopped")
 
     def show_about(self):
         messagebox.showinfo("About", "UVSim - UVU Simulator")
@@ -224,31 +263,16 @@ class UVSimGUI:
         self.output_text.insert(tk.END, f"{message}\n")
 
     def update_status(self):
-        self.accumulator_label.config(text=f"Accumulator: [{self.uvsim.accumulator:04}]")
-        self.pc_label.config(text=f"Program Counter: [{self.uvsim.pc:04}]")
+        self.accumulator_label.config(text=f"Accumulator: [{self.uvsim.accumulator:06}]")
+        self.pc_label.config(text=f"Program Counter: [{self.uvsim.pc:06}]")
         self.display_memory()
 
-    '''
-    def save_file(self):
-        file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
-        if file_path:
-            try:
-                with open(file_path, 'w') as file:
-                    text_content = self.program_text.get("1.0", "end-1c")
-                    file.write(text_content)
-                self.status_bar.config(text=f"File saved: {file_path}")
-            except Exception as e:
-                self.status_bar.config(text=f"Error saving file: {str(e)}")
-        self.load_file()
-    '''
-    def retrieve_input(self):
-        raw_input = self.program_text.get('1.0', 'end-2c')
-        input_as_ints = [int(item) for item in raw_input.split('\n')]
-        self.uvsim.load_program(input_as_ints)
+
 def main():
     root = tk.Tk()
     app = UVSimGUI(root)
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()
