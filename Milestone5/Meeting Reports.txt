@@ -6,6 +6,9 @@
 
 **Who Attended:**
 - Carson Strachan (Scrum Master)
+- Cooper Fullmer
+- Hyomin Cha
+- Spencer Nelson
 
 **Agenda Items Discussed:**
 -TODOs:
@@ -23,22 +26,31 @@
   - Expand the scope of your application so data files can contain more lines.
   - Decide on how to support "old" files.
   - GUI supports multiple files opened.
+- Cooper is out for at least 2 weeks.
+- Team needs to be more communicative and proactive on making edits.
 
 **Assignments:**
-- Carson:
-- Spencer:
-- Hyomin:
-- Cooper:
-- Everyone:
+- Carson: Expand the scope of application so data files can contain 250 lines instead of 100.
+- Carson: Support 4 digits to 6 digits.
+- Spencer: Fixing editing TODO.
+- Hyomin: Working on multiple files being opened in application.
+- Cooper: Delete stop button and remove all documentation with stop button.
 
 
 ### July 24, 2024
 
 **Who Attended:**
 - Carson Strachan (Scrum Master)
+- Spencer Nelson
+- Hyomin Cha
 
 **Agenda Items Discussed:**
--
+- Double check stop button.
+- Working through some troubleshooting.
+- Even user participation.
 
 **Assignments:**
--
+- Carson: Confirm stopped button removed.
+- Carson: Update README.md, unit_tests.py. When finalized, copy over to Milestone5 folder.
+- Spencer: Update UVSim UML.pdf, Design Document.txt. When finalized, copy over to Milestone5 folder.
+- Hyomin: Update wireframe.pdf (currently in Milestone4 folder). When finalized, copy over to Milestone5 folder.
