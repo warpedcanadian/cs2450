@@ -51,6 +51,10 @@ Menu and Button Descriptions
 - **Convert to 6-Digit:** Converts the instructions in a selected file from 4-digit format to 6-digit format and saves the converted instructions to a new file.
 - **Exit:** Closes the simulator.
 
+Note:
+
+- If you save a separately named file (meaning you don't override the original 4-Digit file) it will not show up in your file directory, however you can type in the file name in your directory to load it.
+
 ### Edit Menu
 - **Add Instruction:** Prompts the user to enter a new instruction, which is then added to the current program.
 - **Delete Instruction:** Deletes the selected instruction from the current program.
