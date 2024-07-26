@@ -1,8 +1,8 @@
 import tkinter as tk
-import gui
 from tkinter import ttk
 from utils import load_program_from_file
-from tkinter import filedialog, messagebox, simpledialog
+from tkinter import filedialog, messagebox
+
 
 def load_file(program_frame):
     filename = filedialog.askopenfilename(title="Open File", filetypes=(("Text Files", "*.txt"), ("All Files", "*.*")))
@@ -13,9 +13,10 @@ def load_file(program_frame):
             return
         display_program(program, program_frame)
         display_memory()
-        #status_label.config(text="Status: Program Loaded")
-        #status_bar.config(text="Status: Program Loaded")
+        # status_label.config(text="Status: Program Loaded")
+        # status_bar.config(text="Status: Program Loaded")
         return program
+
 
 def display_program(program, program_frame):
 
@@ -27,12 +28,17 @@ def display_program(program, program_frame):
 
 def display_memory():
     pass
+
+
 def show_about():
     print('show about')
+
+
 def run_program():
     pass
 # def stop_program():
 #     pass
+
 
 def create_widget(root):
     root.title("UVSim")
@@ -49,9 +55,9 @@ def create_widget(root):
     edit_menu = tk.Menu(menu, tearoff=0)
     menu.add_cascade(label="Edit", menu=edit_menu)
 
-    help_menu = tk.Menu( menu, tearoff=0)
-    menu.add_cascade(label="Help", menu= help_menu)
-    help_menu.add_command(label="About", command= show_about)
+    help_menu = tk.Menu(menu, tearoff=0)
+    menu.add_cascade(label="Help", menu=help_menu)
+    help_menu.add_command(label="About", command=show_about)
 
     toolbar = tk.Frame(root)
     toolbar.pack(side=tk.TOP, fill=tk.X)
@@ -104,10 +110,12 @@ def create_widget(root):
     status_bar.config(font=("Helvetica", 12))
     status_bar.pack(side=tk.BOTTOM, fill=tk.X)
 
+
 def main():
     root = tk.Tk()
     create_widget(root)
     root.mainloop()
+
 
 if __name__ == '__main__':
     main()

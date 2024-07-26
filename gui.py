@@ -4,6 +4,7 @@ from tkinter import ttk
 from start import UVSim, load_program_from_file
 import json
 
+
 def load_config():
     try:
         with open('config.json', 'r') as config_file:
@@ -16,9 +17,11 @@ def load_config():
         save_config(config)
     return config
 
+
 def save_config(config):
     with open('config.json', 'w') as config_file:
         json.dump(config, config_file, indent=4)
+
 
 class UVSimGUI:
     def __init__(self, root):
@@ -270,10 +273,12 @@ class UVSimGUI:
         self.pc_label.config(text=f"Program Counter: [{self.uvsim.pc:06}]")
         self.display_memory()
 
+
 def main():
     root = tk.Tk()
     app = UVSimGUI(root)
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()

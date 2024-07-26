@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 
+
 class UVSim:
     def __init__(self):
         self.memory = [0] * 250
@@ -103,6 +104,7 @@ class UVSim:
             return -(abs(value) % (max_val + 1))
         return value
 
+
 class Operation:
     def __init__(self, sim, operand):
         self.sim = sim
@@ -110,6 +112,7 @@ class Operation:
 
     def execute(self):
         raise NotImplementedError("This method should be overridden by subclasses")
+
 
 class Read(Operation):
     def execute(self):
@@ -144,34 +147,41 @@ class Read(Operation):
             value = int(input(f"Enter an integer for memory location {self.operand}: "))
             self.sim.memory[self.operand] = value
 
+
 class Write(Operation):
     def execute(self):
         print(self.sim.memory[self.operand])
         if self.sim.gui:
             self.sim.gui.display_message(f"Value at memory location {self.operand}: {self.sim.memory[self.operand]}")
 
+
 class Load(Operation):
     def execute(self):
         self.sim.accumulator = self.sim.memory[self.operand]
 
+
 class Store(Operation):
     def execute(self):
         self.sim.memory[self.operand] = self.sim.accumulator
+
 
 class Add(Operation):
     def execute(self):
         self.sim.accumulator += self.sim.memory[self.operand]
         self.sim.accumulator = self.sim.check_overflow(self.sim.accumulator)
 
+
 class Subtract(Operation):
     def execute(self):
         self.sim.accumulator -= self.sim.memory[self.operand]
         self.sim.accumulator = self.sim.check_overflow(self.sim.accumulator)
 
+
 class Multiply(Operation):
     def execute(self):
         self.sim.accumulator *= self.sim.memory[self.operand]
         self.sim.accumulator = self.sim.check_overflow(self.sim.accumulator)
+
 
 class Divide(Operation):
     def execute(self):
@@ -184,19 +194,23 @@ class Divide(Operation):
             self.sim.accumulator //= self.sim.memory[self.operand]
             self.sim.accumulator = self.sim.check_overflow(self.sim.accumulator)
 
+
 class Branch(Operation):
     def execute(self):
         self.sim.pc = self.operand
+
 
 class BranchNeg(Operation):
     def execute(self):
         if self.sim.accumulator < 0:
             self.sim.pc = self.operand
 
+
 class BranchZero(Operation):
     def execute(self):
         if self.sim.accumulator == 0:
             self.sim.pc = self.operand
+
 
 class Halt(Operation):
     def execute(self):
@@ -204,6 +218,7 @@ class Halt(Operation):
         if self.sim.gui:
             self.sim.gui.display_message("Halting execution")
         self.sim.running = False
+
 
 def load_program_from_file(filename):
     program = []
