@@ -35,9 +35,9 @@ class UVSim:
             raise IndexError("Program Counter exceeded memory bounds.")
 
     def decode_execute(self, instruction):
-        opcode = instruction // 1000  # Extracting the first two digits as opcode
-        operand = instruction % 1000  # Extracting the last three digits as operand
-        print(f"Decoding instruction: opcode={opcode}, operand={operand}")
+        opcode = (instruction // 1000) % 1000  # Extracting the three-digit opcode
+        operand = instruction % 1000  # Extracting the three-digit operand
+        print(f"Decoding instruction: opcode={opcode:03d}, operand={operand:03d}")
         operation_classes = {
             10: Read,
             11: Write,
@@ -80,13 +80,15 @@ class UVSim:
 
     @staticmethod
     def is_valid_instruction(instruction):
-        if (instruction.startswith('+') or instruction.startswith('-')) and len(instruction) == 5:
+        # Check for six-digit instructions with a sign
+        if len(instruction) == 7 and (instruction[0] == '+' or instruction[0] == '-'):
             try:
-                int(instruction)
+                int(instruction[1:])  # Ensure the rest is numeric
                 return True
             except ValueError:
                 return False
-        elif len(instruction) == 6:  # For instructions without a sign
+        # Check for five-digit instructions with a sign
+        elif len(instruction) == 5 and (instruction[0] == '+' or instruction[0] == '-'):
             try:
                 int(instruction)
                 return True
@@ -214,13 +216,12 @@ def load_program_from_file(filename):
             if line:
                 if UVSim.is_valid_instruction(line):
                     # Ensure instruction is converted to a six-digit format
-                    if len(line) == 5:
-                        line = f"{line[0]}0{line[1:]}"
                     program.append(int(line))
                 else:
                     print(f"Invalid instruction '{line}' ignored.")
     print(f"Loaded program: {program}")  # Debugging statement
     return program
+
 
 if __name__ == "__main__":
     import gui

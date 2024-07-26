@@ -189,15 +189,21 @@ class UVSimGUI:
             new_lines = []
             for line in lines:
                 line = line.strip()
-                if UVSim.is_valid_instruction(line):
-                    if len(line) == 5:  # Already has sign and 4 digits
-                        new_line = f"{line[0]}0{line[1:]}"
-                    elif len(line) == 4:  # No sign, 4 digits
-                        new_line = f"+00{line}"
+                if len(line) == 5 and (line[0] == '+' or line[0] == '-'):
+                    if UVSim.is_valid_instruction(line):
+                        # Convert to six-digit format with leading zeros
+                        sign = line[0]
+                        instruction = line[1:]
+                        opcode = instruction[:2]
+                        operand = instruction[2:]
+                        new_line = f"{sign}0{opcode.zfill(2)}{operand.zfill(3)}"
+                        new_lines.append(new_line)
                     else:
-                        messagebox.showerror("Error", "File contains invalid instructions.")
+                        messagebox.showerror("Error", f"Invalid instruction '{line}' found.")
                         return
-                    new_lines.append(new_line)
+                elif len(line) == 6 and UVSim.is_valid_instruction(line):
+                    # Already in six-digit format
+                    new_lines.append(line)
                 else:
                     messagebox.showerror("Error", f"Invalid instruction '{line}' found.")
                     return
