@@ -43,26 +43,32 @@ class TestUVSim(unittest.TestCase):
 
     def test_add_success(self):
         program = [2000, 3001, 4300]
-        self.uvsim.memory[0] = 1723
+        self.uvsim.memory[0] = 2000
         self.uvsim.memory[1] = 3001
         self.uvsim.load_program(program)
         self.uvsim.run()
         self.assertEqual(self.uvsim.accumulator, 5001)
 
     def test_subtract_success(self):
-        program = [1000,1001, 2001, 3100, 4300]
+        program = [2000, 3101, 4300]
+        self.uvsim.memory[0] = 3000
+        self.uvsim.memory[1] = 1000
         self.uvsim.load_program(program)
         self.uvsim.run()
-        self.assertEqual(self.uvsim.accumulator, 1)
+        self.assertEqual(self.uvsim.accumulator, 2000)
 
     def test_divide_success(self):
-        program = [1000, 2000, 3200, 4300]
+        program = [2000, 3201, 4300]
+        self.uvsim.memory[0] = 2000
+        self.uvsim.memory[1] = 1000
         self.uvsim.load_program(program)
         self.uvsim.run()
-        self.assertEqual(self.uvsim.accumulator, 1)
+        self.assertEqual(self.uvsim.accumulator, 2)
 
     def test_multiply_success(self):
-        program = [1000, 2000, 3300, 4300]
+        program = [2000, 3301, 4300]
+        self.uvsim.memory[0] = 1000
+        self.uvsim.memory[1] = 1000
         self.uvsim.load_program(program)
         self.uvsim.run()
         self.assertEqual(self.uvsim.accumulator, 1000000)
@@ -107,6 +113,43 @@ class TestUVSim(unittest.TestCase):
         self.uvsim.load_program(program)
         self.uvsim.run()
         self.assertFalse(self.uvsim.running)
+
+    def test_invalid_instruction(self):
+        program = [9999]
+        self.uvsim.load_program(program)
+        with self.assertRaises(IndexError):
+            self.uvsim.run()
+
+    def test_overflow_positive(self):
+        program = [2000, 3001, 4300]
+        self.uvsim.memory[0] = 999999
+        self.uvsim.memory[1] = 1
+        self.uvsim.load_program(program)
+        self.uvsim.run()
+        self.assertEqual(self.uvsim.accumulator, 0)
+
+    def test_overflow_negative(self):
+        program = [2000, 3101, 4300]
+        self.uvsim.memory[0] = -999999
+        self.uvsim.memory[1] = 1
+        self.uvsim.load_program(program)
+        self.uvsim.run()
+        self.assertEqual(self.uvsim.accumulator, 0)
+
+    def test_invalid_file_instruction(self):
+        program = [99999]
+        with self.assertRaises(ValueError):
+            self.uvsim.load_program(program)
+
+    def test_convert_file(self):
+        program = ["+0001", "+0002", "+3003", "+4300"]
+        converted_program = ["+000001", "+000002", "+000303", "+004300"]
+        with open("test_file.txt", "w") as file:
+            file.write("\n".join(program))
+        self.uvsim.convert_file("test_file.txt", "converted_test_file.txt")
+        with open("converted_test_file.txt", "r") as file:
+            result = file.read().splitlines()
+        self.assertEqual(result, converted_program)
 
 if __name__ == "__main__":
     unittest.main()
