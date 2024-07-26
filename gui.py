@@ -62,8 +62,8 @@ class UVSimGUI:
         self.run_button = tk.Button(self.toolbar, text="Run", command=self.run_program)
         self.run_button.pack(side=tk.LEFT, padx=2, pady=2)
 
-        self.stop_button = tk.Button(self.toolbar, text="Stop", command=self.stop_program)
-        self.stop_button.pack(side=tk.LEFT, padx=2, pady=2)
+        # self.stop_button = tk.Button(self.toolbar, text="Stop", command=self.stop_program)
+        # self.stop_button.pack(side=tk.LEFT, padx=2, pady=2)
 
         self.save_button = tk.Button(self.toolbar, text="Save", command=self.save_file)
         self.save_button.pack(side=tk.LEFT, padx=2, pady=2)
@@ -117,7 +117,7 @@ class UVSimGUI:
         self.root.configure(bg=self.primary_color)
         self.toolbar.configure(bg=self.primary_color)
         self.run_button.configure(bg=self.primary_color, fg=self.off_color)
-        self.stop_button.configure(bg=self.primary_color, fg=self.off_color)
+        # self.stop_button.configure(bg=self.primary_color, fg=self.off_color)
         self.save_button.configure(bg=self.primary_color, fg=self.off_color)
         self.status_bar.configure(bg=self.primary_color, fg=self.off_color)
 
@@ -256,10 +256,10 @@ class UVSimGUI:
         self.status_bar.config(text="Status: Stopped" if not self.uvsim.running else "Status: Running")
         self.update_status()  # Ensure the status labels are updated with final values
 
-    def stop_program(self):
-        self.uvsim.running = False
-        self.status_label.config(text="Status: Stopped")
-        self.status_bar.config(text="Status: Stopped")
+    # def stop_program(self):
+    #     self.uvsim.running = False
+    #     self.status_label.config(text="Status: Stopped")
+    #     self.status_bar.config(text="Status: Stopped")
 
     def show_about(self):
         messagebox.showinfo("About", "UVSim - UVU Simulator")
