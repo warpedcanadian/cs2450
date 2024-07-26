@@ -160,7 +160,7 @@ class UVSimGUI:
             self.display_memory()
             self.status_label.config(text="Status: Program Loaded")
             self.status_bar.config(text="Status: Program Loaded")
-        self.root.geometry("")  # Adjust window size to fit the new content
+        self.root.geometry("")
 
     def save_file(self):
         current_tab = self.notebook.select()
@@ -191,7 +191,6 @@ class UVSimGUI:
                 line = line.strip()
                 if len(line) == 5 and (line[0] == '+' or line[0] == '-'):
                     if UVSim.is_valid_instruction(line):
-                        # Convert to six-digit format with leading zeros
                         sign = line[0]
                         instruction = line[1:]
                         opcode = instruction[:2]
@@ -202,7 +201,6 @@ class UVSimGUI:
                         messagebox.showerror("Error", f"Invalid instruction '{line}' found.")
                         return
                 elif len(line) == 6 and UVSim.is_valid_instruction(line):
-                    # Already in six-digit format
                     new_lines.append(line)
                 else:
                     messagebox.showerror("Error", f"Invalid instruction '{line}' found.")
@@ -254,7 +252,7 @@ class UVSimGUI:
             messagebox.showerror("Error", str(e))
         self.status_label.config(text="Status: Stopped" if not self.uvsim.running else "Status: Running")
         self.status_bar.config(text="Status: Stopped" if not self.uvsim.running else "Status: Running")
-        self.update_status()  # Ensure the status labels are updated with final values
+        self.update_status()
 
     # def stop_program(self):
     #     self.uvsim.running = False
