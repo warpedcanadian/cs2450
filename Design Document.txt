@@ -129,3 +129,21 @@
   4. UVSim reads a word from the console and stores it in the specified memory location.
 - **Preconditions:** The BasicML program includes a valid READ instruction and is loaded into memory.
 - **Postconditions:** The word is stored in the specified memory location.
+
+### Use Case 11: Open multiple tabs/ windows
+- **Actor:** Student
+-**System:** UVSim
+-**Goal:** Enable the actor to open multiple tabs of UVSim at the same time
+-**Description:**
+  1. Open initial instance of UVSim.
+  2. Opening a second file will automatically open the file in a new tab.
+  3. Switch between tabs by clicking on the tab you wish to work on.
+
+### Use Case 12: Using 6 digit commands
+- **Actor:** Student
+-**System:** UVSim
+-**Goal:** Enable the use of 6 digit commands
+-**Description:**
+  1. Open initial instance of UVSim.
+  2. Choose a file to open
+  3. If you want to run you file using 6 digit commands click the "convert to 6-digit" option and it will save a new 6-digit version of the file.
