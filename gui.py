@@ -3,7 +3,6 @@ from tkinter import filedialog, messagebox, simpledialog, colorchooser
 from tkinter import ttk
 from start import UVSim, load_program_from_file
 import json
-from tkinter.filedialog import asksaveasfile
 
 
 def load_config():
@@ -35,7 +34,6 @@ class UVSimGUI:
         self.create_widgets()
         self.apply_color_scheme()
         self.programs = {}
-        # self.root.geometry("1280x600") 
 
     def create_widgets(self):
         self.root.title("UVSim")
@@ -67,8 +65,8 @@ class UVSimGUI:
         self.run_button = tk.Button(self.toolbar, text="Run", command=self.run_program)
         self.run_button.pack(side=tk.LEFT, padx=2, pady=2)
 
-        self.stop_button = tk.Button(self.toolbar, text="Stop", command=self.stop_program)
-        self.stop_button.pack(side=tk.LEFT, padx=2, pady=2)
+        # self.stop_button = tk.Button(self.toolbar, text="Stop", command=self.stop_program)
+        # self.stop_button.pack(side=tk.LEFT, padx=2, pady=2)
 
         self.save_button = tk.Button(self.toolbar, text="Save", command=self.save_file)
         self.save_button.pack(side=tk.LEFT, padx=2, pady=2)
@@ -85,10 +83,10 @@ class UVSimGUI:
         self.memory_label = tk.Label(self.memory_frame, text="Memory Display")
         self.memory_label.pack(side=tk.TOP, anchor=tk.W)
 
-        self.memory_tree = ttk.Treeview(self.memory_frame, columns=("Address", "Value"), show="headings", height=10)
+        self.memory_tree = ttk.Treeview(self.memory_frame, columns=("Address", "Value"), show="headings", height=15)
         self.memory_tree.heading("Address", text="Address")
         self.memory_tree.heading("Value", text="Value")
-        self.memory_tree.pack(side=tk.TOP, fill=tk.BOTH, expand=False)
+        self.memory_tree.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
         self.status_frame = tk.Frame(self.memory_frame)
         self.status_frame.pack(side=tk.TOP, fill=tk.X, pady=10)
@@ -122,7 +120,7 @@ class UVSimGUI:
         self.root.configure(bg=self.primary_color)
         self.toolbar.configure(bg=self.primary_color)
         self.run_button.configure(bg=self.primary_color, fg=self.off_color)
-        self.stop_button.configure(bg=self.primary_color, fg=self.off_color)
+        # self.stop_button.configure(bg=self.primary_color, fg=self.off_color)
         self.save_button.configure(bg=self.primary_color, fg=self.off_color)
         self.status_bar.configure(bg=self.primary_color, fg=self.off_color)
 
@@ -165,7 +163,7 @@ class UVSimGUI:
             self.display_memory()
             self.status_label.config(text="Status: Program Loaded")
             self.status_bar.config(text="Status: Program Loaded")
-        self.root.geometry("")  # Adjust window size to fit the new content
+        self.root.geometry("")
 
     def save_file(self):
         current_tab = self.notebook.select()
@@ -194,15 +192,19 @@ class UVSimGUI:
             new_lines = []
             for line in lines:
                 line = line.strip()
-                if UVSim.is_valid_instruction(line):
-                    if len(line) == 5:  # Already has sign and 4 digits
-                        new_line = f"{line[0]}0{line[1:]}"
-                    elif len(line) == 4:  # No sign, 4 digits
-                        new_line = f"+0{line}"
+                if len(line) == 5 and (line[0] == '+' or line[0] == '-'):
+                    if UVSim.is_valid_instruction(line):
+                        sign = line[0]
+                        instruction = line[1:]
+                        opcode = instruction[:2]
+                        operand = instruction[2:]
+                        new_line = f"{sign}0{opcode.zfill(2)}{operand.zfill(3)}"
+                        new_lines.append(new_line)
                     else:
-                        messagebox.showerror("Error", "File contains invalid instructions.")
+                        messagebox.showerror("Error", f"Invalid instruction '{line}' found.")
                         return
-                    new_lines.append(new_line)
+                elif len(line) == 6 and UVSim.is_valid_instruction(line):
+                    new_lines.append(line)
                 else:
                     messagebox.showerror("Error", f"Invalid instruction '{line}' found.")
                     return
@@ -247,14 +249,18 @@ class UVSimGUI:
         self.output_text.delete(1.0, tk.END)
         if not self.uvsim.running:
             self.uvsim.load_program(self.program)
-        self.uvsim.run()
-        self.status_label.config(text="Status: Running")
-        self.status_bar.config(text="Status: Running")
+        try:
+            self.uvsim.run()
+        except IndexError as e:
+            messagebox.showerror("Error", str(e))
+        self.status_label.config(text="Status: Stopped" if not self.uvsim.running else "Status: Running")
+        self.status_bar.config(text="Status: Stopped" if not self.uvsim.running else "Status: Running")
+        self.update_status()
 
-    def stop_program(self):
-        self.uvsim.running = False
-        self.status_label.config(text="Status: Stopped")
-        self.status_bar.config(text="Status: Stopped")
+    # def stop_program(self):
+    #     self.uvsim.running = False
+    #     self.status_label.config(text="Status: Stopped")
+    #     self.status_bar.config(text="Status: Stopped")
 
     def show_about(self):
         messagebox.showinfo("About", "UVSim - UVU Simulator")

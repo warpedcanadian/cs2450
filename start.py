@@ -1,9 +1,10 @@
 import tkinter as tk
 from tkinter import messagebox
 
+
 class UVSim:
     def __init__(self):
-        self.memory = [0] * 100
+        self.memory = [0] * 250
         self.accumulator = 0
         self.pc = 0
         self.running = True
@@ -14,21 +15,30 @@ class UVSim:
         self.gui = gui
 
     def load_program(self, program):
-        self.memory = [0] * 100
+        self.memory = [0] * 250
         for i, instruction in enumerate(program):
-            self.memory[i] = instruction
+            if i < len(self.memory):
+                self.memory[i] = instruction
         self.accumulator = 0
         self.pc = 0
         self.running = True
 
     def fetch(self):
-        instruction = self.memory[self.pc]
-        self.pc += 1
-        return instruction
+        if not self.running:
+            return 0
+        if self.pc < len(self.memory):
+            instruction = self.memory[self.pc]
+            print(f"Fetching instruction at PC={self.pc}: {instruction}")
+            self.pc += 1
+            return instruction
+        else:
+            self.running = False
+            raise IndexError("Program Counter exceeded memory bounds.")
 
     def decode_execute(self, instruction):
-        opcode = instruction // 100
-        operand = instruction % 100
+        opcode = (instruction // 1000) % 1000
+        operand = instruction % 1000
+        print(f"Decoding instruction: opcode={opcode:03d}, operand={operand:03d}")
         operation_classes = {
             10: Read,
             11: Write,
@@ -47,26 +57,37 @@ class UVSim:
         if opcode in operation_classes:
             operation = operation_classes[opcode](self, operand)
             operation.execute()
+        else:
+            self.running = False
         if self.gui:
             self.gui.display_memory()
 
     def run(self):
         while self.running:
             if not self.waiting_for_input:
-                instruction = self.fetch()
-                self.decode_execute(instruction)
-                if self.gui:
-                    self.gui.update_status()
+                try:
+                    instruction = self.fetch()
+                    self.decode_execute(instruction)
+                    if not self.running:
+                        break
+                except IndexError as e:
+                    self.running = False
+                    if self.gui:
+                        self.gui.display_message(str(e))
+                    break
+            if self.gui:
+                self.gui.update_status()
+        print(f"Program halted. Final PC={self.pc}, Accumulator={self.accumulator}")
 
     @staticmethod
     def is_valid_instruction(instruction):
-        if (instruction.startswith('+') or instruction.startswith('-')) and len(instruction) == 5:
+        if len(instruction) == 7 and (instruction[0] == '+' or instruction[0] == '-'):
             try:
-                int(instruction)
+                int(instruction[1:])
                 return True
             except ValueError:
                 return False
-        elif len(instruction) == 4:
+        elif len(instruction) == 5 and (instruction[0] == '+' or instruction[0] == '-'):
             try:
                 int(instruction)
                 return True
@@ -75,13 +96,14 @@ class UVSim:
         return False
 
     def check_overflow(self, value):
-        max_val = 9999
-        min_val = -9999
+        max_val = 999999
+        min_val = -999999
         if value > max_val:
             return value % (max_val + 1)
         elif value < min_val:
             return -(abs(value) % (max_val + 1))
         return value
+
 
 class Operation:
     def __init__(self, sim, operand):
@@ -90,6 +112,7 @@ class Operation:
 
     def execute(self):
         raise NotImplementedError("This method should be overridden by subclasses")
+
 
 class Read(Operation):
     def execute(self):
@@ -124,34 +147,41 @@ class Read(Operation):
             value = int(input(f"Enter an integer for memory location {self.operand}: "))
             self.sim.memory[self.operand] = value
 
+
 class Write(Operation):
     def execute(self):
         print(self.sim.memory[self.operand])
         if self.sim.gui:
             self.sim.gui.display_message(f"Value at memory location {self.operand}: {self.sim.memory[self.operand]}")
 
+
 class Load(Operation):
     def execute(self):
         self.sim.accumulator = self.sim.memory[self.operand]
 
+
 class Store(Operation):
     def execute(self):
         self.sim.memory[self.operand] = self.sim.accumulator
+
 
 class Add(Operation):
     def execute(self):
         self.sim.accumulator += self.sim.memory[self.operand]
         self.sim.accumulator = self.sim.check_overflow(self.sim.accumulator)
 
+
 class Subtract(Operation):
     def execute(self):
         self.sim.accumulator -= self.sim.memory[self.operand]
         self.sim.accumulator = self.sim.check_overflow(self.sim.accumulator)
 
+
 class Multiply(Operation):
     def execute(self):
         self.sim.accumulator *= self.sim.memory[self.operand]
         self.sim.accumulator = self.sim.check_overflow(self.sim.accumulator)
+
 
 class Divide(Operation):
     def execute(self):
@@ -164,19 +194,23 @@ class Divide(Operation):
             self.sim.accumulator //= self.sim.memory[self.operand]
             self.sim.accumulator = self.sim.check_overflow(self.sim.accumulator)
 
+
 class Branch(Operation):
     def execute(self):
         self.sim.pc = self.operand
+
 
 class BranchNeg(Operation):
     def execute(self):
         if self.sim.accumulator < 0:
             self.sim.pc = self.operand
 
+
 class BranchZero(Operation):
     def execute(self):
         if self.sim.accumulator == 0:
             self.sim.pc = self.operand
+
 
 class Halt(Operation):
     def execute(self):
@@ -185,17 +219,21 @@ class Halt(Operation):
             self.sim.gui.display_message("Halting execution")
         self.sim.running = False
 
+
 def load_program_from_file(filename):
     program = []
     with open(filename, 'r') as file:
         for line in file:
             line = line.strip()
+            print(f"Reading line: {line}")
             if line:
                 if UVSim.is_valid_instruction(line):
                     program.append(int(line))
                 else:
                     print(f"Invalid instruction '{line}' ignored.")
+    print(f"Loaded program: {program}")
     return program
+
 
 if __name__ == "__main__":
     import gui

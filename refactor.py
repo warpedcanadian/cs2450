@@ -1,8 +1,8 @@
 import tkinter as tk
-import gui
 from tkinter import ttk
 from utils import load_program_from_file
-from tkinter import filedialog, messagebox, simpledialog
+from tkinter import filedialog, messagebox
+
 
 def load_file(program_frame):
     filename = filedialog.askopenfilename(title="Open File", filetypes=(("Text Files", "*.txt"), ("All Files", "*.*")))
@@ -13,12 +13,13 @@ def load_file(program_frame):
             return
         display_program(program, program_frame)
         display_memory()
-        #status_label.config(text="Status: Program Loaded")
-        #status_bar.config(text="Status: Program Loaded")
+        # status_label.config(text="Status: Program Loaded")
+        # status_bar.config(text="Status: Program Loaded")
         return program
 
+
 def display_program(program, program_frame):
-    
+
     program_text = tk.Text(program_frame, wrap=tk.NONE)
     program_text.delete(1.0, tk.END)
     for instruction in program:
@@ -27,12 +28,17 @@ def display_program(program, program_frame):
 
 def display_memory():
     pass
+
+
 def show_about():
     print('show about')
+
+
 def run_program():
     pass
-def stop_program():
-    pass
+# def stop_program():
+#     pass
+
 
 def create_widget(root):
     root.title("UVSim")
@@ -49,9 +55,9 @@ def create_widget(root):
     edit_menu = tk.Menu(menu, tearoff=0)
     menu.add_cascade(label="Edit", menu=edit_menu)
 
-    help_menu = tk.Menu( menu, tearoff=0)
-    menu.add_cascade(label="Help", menu= help_menu)
-    help_menu.add_command(label="About", command= show_about)
+    help_menu = tk.Menu(menu, tearoff=0)
+    menu.add_cascade(label="Help", menu=help_menu)
+    help_menu.add_command(label="About", command=show_about)
 
     toolbar = tk.Frame(root)
     toolbar.pack(side=tk.TOP, fill=tk.X)
@@ -62,9 +68,8 @@ def create_widget(root):
     run_button = tk.Button(toolbar, text="Run", command=run_program)
     run_button.pack(side=tk.LEFT, padx=2, pady=2)
 
-    stop_button = tk.Button(toolbar, text="Stop", command=stop_program)
-    stop_button.pack(side=tk.LEFT, padx=2, pady=2)
-
+    # stop_button = tk.Button(toolbar, text="Stop", command=stop_program)
+    # stop_button.pack(side=tk.LEFT, padx=2, pady=2)
 
     main_panel = tk.Frame(root)
     main_panel.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=10, pady=10)
@@ -80,8 +85,6 @@ def create_widget(root):
 
     memory_frame = tk.Frame(main_panel)
     memory_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
-
-
 
     memory_label = tk.Label(memory_frame, text="Memory Display")
     memory_label.pack(side=tk.TOP, anchor=tk.W)
@@ -107,11 +110,12 @@ def create_widget(root):
     status_bar.config(font=("Helvetica", 12))
     status_bar.pack(side=tk.BOTTOM, fill=tk.X)
 
-    
+
 def main():
     root = tk.Tk()
     create_widget(root)
     root.mainloop()
+
 
 if __name__ == '__main__':
     main()
