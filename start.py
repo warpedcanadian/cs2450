@@ -3,7 +3,7 @@ from tkinter import messagebox
 
 class UVSim:
     def __init__(self):
-        self.memory = [0] * 250  # Change memory size to 250
+        self.memory = [0] * 250
         self.accumulator = 0
         self.pc = 0
         self.running = True
@@ -14,7 +14,7 @@ class UVSim:
         self.gui = gui
 
     def load_program(self, program):
-        self.memory = [0] * 250  # Change memory size to 250
+        self.memory = [0] * 250
         for i, instruction in enumerate(program):
             if i < len(self.memory):
                 self.memory[i] = instruction
@@ -24,7 +24,7 @@ class UVSim:
 
     def fetch(self):
         if not self.running:
-            return 0  # Return a noop if not running to avoid out of bounds
+            return 0
         if self.pc < len(self.memory):
             instruction = self.memory[self.pc]
             print(f"Fetching instruction at PC={self.pc}: {instruction}")
@@ -35,8 +35,8 @@ class UVSim:
             raise IndexError("Program Counter exceeded memory bounds.")
 
     def decode_execute(self, instruction):
-        opcode = (instruction // 1000) % 1000  # Extracting the three-digit opcode
-        operand = instruction % 1000  # Extracting the three-digit operand
+        opcode = (instruction // 1000) % 1000
+        operand = instruction % 1000
         print(f"Decoding instruction: opcode={opcode:03d}, operand={operand:03d}")
         operation_classes = {
             10: Read,
@@ -57,7 +57,7 @@ class UVSim:
             operation = operation_classes[opcode](self, operand)
             operation.execute()
         else:
-            self.running = False  # Stop the simulation if the instruction is invalid
+            self.running = False
         if self.gui:
             self.gui.display_memory()
 
@@ -80,14 +80,12 @@ class UVSim:
 
     @staticmethod
     def is_valid_instruction(instruction):
-        # Check for six-digit instructions with a sign
         if len(instruction) == 7 and (instruction[0] == '+' or instruction[0] == '-'):
             try:
-                int(instruction[1:])  # Ensure the rest is numeric
+                int(instruction[1:])
                 return True
             except ValueError:
                 return False
-        # Check for five-digit instructions with a sign
         elif len(instruction) == 5 and (instruction[0] == '+' or instruction[0] == '-'):
             try:
                 int(instruction)
@@ -212,14 +210,13 @@ def load_program_from_file(filename):
     with open(filename, 'r') as file:
         for line in file:
             line = line.strip()
-            print(f"Reading line: {line}")  # Debugging statement
+            print(f"Reading line: {line}")
             if line:
                 if UVSim.is_valid_instruction(line):
-                    # Ensure instruction is converted to a six-digit format
                     program.append(int(line))
                 else:
                     print(f"Invalid instruction '{line}' ignored.")
-    print(f"Loaded program: {program}")  # Debugging statement
+    print(f"Loaded program: {program}")
     return program
 
 
